@@ -1,7 +1,4 @@
-﻿// GoodreadsApp.cpp : Defines the entry point for the application.
-//
-
-#include "GoodreadsApp.h"
+﻿#include "GoodreadsApp.h"
 
 using namespace std;
 
