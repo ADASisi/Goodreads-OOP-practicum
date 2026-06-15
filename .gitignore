@@ -29,31 +29,40 @@
 *.exe
 *.out
 *.app
-
+*.aps
+*.rc
 
 [Bb]uild/
 build-*/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
 
 Testing/
 vcpkg_installed/
-.cmake/
 
+*.tlog
+*.lastbuildstate
+*.recipe
+*.obj
+*.ilk
+*.pdb
+*.log
 
 .idea/
-cmake-build-*/
 
 .vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 
+.vs/
+
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 
 .vs/
 *.user
