@@ -1,22 +1,42 @@
 #pragma once
 #include <iostream>
-#include "../utils/Genre.h"
+#include <string>
+#include<vector>
+#include "Date.h"
+
+enum class Genre
+{
+	Romance,
+	Fantasy,
+	Fiction,
+	Thriller,
+	Mystery,
+	Horror,
+	Drama,
+	Adventure
+};
 
 class Book
 {
-	public:
-	Book() = default;
-	Book(const std::string& title, const std::string& author, int year)
-		: title(title), author(author), year(year) {};
+public:
+	Book(const std::string& title, const std::string& author, Date releaseDate, unsigned int pageCount, std::vector<Genre> genres);
+
 	std::string getTitle() const;
 	std::string getAuthor() const;
-	int getYear() const;
+	unsigned int getYear() const;
+	unsigned int getCountRatings() const;
+	double getSumRatings() const;
+	void setSynopsis(const std::string& synopsis);
+
+	void addRating(double rating);
+	unsigned int getPageCount() const;
+
 private:
 	std::string title;
 	std::string author;
-	std::string publishers;
+	std::string publishingHouse;
 	std::string synopsis = "No synopsis available.";
-	Genre genre;
+	std::vector<Genre> genres;
 	double sumRatings = 0.0;
 	unsigned int countRatings = 0;
 	Date releaseDate;

@@ -5,26 +5,51 @@
 #include "Shelf.h"
 #include "Message.h"
 #include "Date.h"
-#include "../utils/TypeUsers.h"
 #include <vector>
 #include <string>
 #include <iostream>
 #include <optional>
 
+enum class Status {
+    PlanToRead,
+    Reading,
+    Paused,
+    Dropped
+};
+
 class Reader : public User
 {
 public:
-	Reader(std::string username, std::string password, Date registerDate) : User(username, password, registerDate) {}
-	TypeUsers getType() const override;
+    Reader(std::string username, std::string password, Date registerDate);
+    TypeUsers getType() const override;
+    std::unique_ptr<User> clone() const override;
 
-	std::unique_ptr<User> clone() const override {
-		return std::make_unique<Reader>(*this);
-	}
+    const std::vector<std::shared_ptr<Book>>& getMyBooks() const;
+    const std::vector<std::shared_ptr<Shelf>>& getShelves() const;
+
+    bool isFollowing(User* u);
+
+    std::vector<Message>& getInbox();
+    void addMessageToInbox(const Message& msg);
+    bool isFollowing(User* u) const;
+
+    void addBookToProfile(std::shared_ptr<Book> book);
+
+    void removeBookFromProfile(const std::string& bookTitle);
+
+    bool hasShelf(const std::string& shelfName) const;
+
+    void addShelf(std::shared_ptr<Shelf> shelf);
+
+    void removeShelf(const std::string& shelfName);
+
+    Shelf* findShelf(const std::string& shelfName);
 
 private:
-	std::vector<std::shared_ptr<Book>> myBooks;
-	std::vector<std::unique_ptr<Shelf>> shelves;
-	std::vector<std::shared_ptr<Book>> favoriteBooks;
-	std::optional<Date> birthday;
-	std::vector<Message> inbox;
+    std::vector<std::shared_ptr<Book>> myBooks;
+    std::vector<std::shared_ptr<Shelf>> shelves;
+    std::vector<std::shared_ptr<Book>> favoriteBooks;
+    std::optional<Date> birthday;
+    std::vector<Message> inbox;
 };
+
