@@ -23,6 +23,26 @@ const std::vector<std::shared_ptr<Shelf>>& Reader::getShelves() const
     return shelves;
 }
 
+const std::vector<std::shared_ptr<Book>>& Reader::getFavoriteBooks() const
+{
+    return favoriteBooks;
+}
+
+const std::optional<Date>& Reader::getBirthday() const
+{
+    return birthday;
+}
+
+void Reader::setBirthday(const Date& birthday)
+{
+    this->birthday = birthday;
+}
+
+void Reader::clearBirthday()
+{
+    birthday.reset();
+}
+
 bool Reader::isFollowing(User* u)
 {
     return User::isFollowing(u);

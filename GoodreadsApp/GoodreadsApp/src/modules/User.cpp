@@ -16,6 +16,11 @@ std::string User::getPassword() const
 	return password;
 }
 
+Date User::getRegistrationDate() const
+{
+	return registrationDate;
+}
+
 void User::setUsername(const std::string& newUsername)
 {
 	this->username = newUsername;

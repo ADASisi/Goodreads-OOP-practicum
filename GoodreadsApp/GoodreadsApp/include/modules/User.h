@@ -23,6 +23,7 @@ public:
 	virtual TypeUsers getType() const = 0;
 	std::string getUsername() const;
 	std::string getPassword() const;
+	Date getRegistrationDate() const;
 	const std::vector<User*>& getFollowers() const;
 
 	void addFollower(User* user);

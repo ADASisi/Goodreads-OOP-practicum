@@ -1,4 +1,6 @@
 #include "../../include/service/AuthService.h"
+#include "../helperFunctions.h"
+
 
 AuthService::AuthService(std::vector<std::unique_ptr<User>>& usersDB)
 	:usersDB(usersDB), currentUser(nullptr) {
@@ -94,3 +96,4 @@ const std::vector<std::unique_ptr<User>>& AuthService::getUsersDB() const
 {
 	return usersDB;
 }
+

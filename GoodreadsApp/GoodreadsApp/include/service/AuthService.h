@@ -20,6 +20,7 @@ public:
 	bool login(const std::string& username);
 	void logout();
 	User* getCurrentUser() const;
+
 	std::vector<std::unique_ptr<User>>& getUsersDB();
 	const std::vector<std::unique_ptr<User>>& getUsersDB() const;
 };

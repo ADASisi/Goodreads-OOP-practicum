@@ -26,6 +26,10 @@ public:
 
     const std::vector<std::shared_ptr<Book>>& getMyBooks() const;
     const std::vector<std::shared_ptr<Shelf>>& getShelves() const;
+    const std::vector<std::shared_ptr<Book>>& getFavoriteBooks() const;
+    const std::optional<Date>& getBirthday() const;
+    void setBirthday(const Date& birthday);
+    void clearBirthday();
 
     bool isFollowing(User* u);
 

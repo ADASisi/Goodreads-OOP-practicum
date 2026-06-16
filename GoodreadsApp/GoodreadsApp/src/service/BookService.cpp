@@ -79,6 +79,7 @@ void BookService::searchBooks(const std::string& query) const
     }
 }
 
+
 void BookService::addBookToProfile(Reader* currentReader, const std::string& bookName, int rating)
 {
     if (!currentReader)
@@ -201,6 +202,7 @@ void BookService::deleteBookFromProfile(Reader* currentReader, const std::string
 void BookService::showShelf(Reader* currentReader, Reader* targetReader, const std::string& shelfName) const
 {
     Reader* readerToSearch = targetReader ? targetReader : currentReader;
+    //proverka za priqtelstovo
 
     if (!readerToSearch)
     {

@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 #include <iostream>
 #include <string>
 #include <vector>
@@ -15,6 +15,7 @@ private:
 	std::string toLower(std::string str) const;
 public:
 	explicit BookService(std::vector<std::shared_ptr<Book>>& books);
+
 
 	void searchBooks(const std::string& query) const;
 	void addBookToProfile(Reader* currentReader, const std::string& bookName, int rating = -1);
