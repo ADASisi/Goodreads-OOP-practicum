@@ -5,17 +5,12 @@
 #include "Shelf.h"
 #include "Message.h"
 #include "Date.h"
+#include "../utils/Status.h"
 #include <vector>
 #include <string>
 #include <iostream>
 #include <optional>
 
-enum class Status {
-    PlanToRead,
-    Reading,
-    Paused,
-    Dropped
-};
 
 class Reader : public User
 {

@@ -8,7 +8,6 @@ class SocialService {
 private:
 	AuthService& authService;
 
-	std::string toLower(std::string str) const;
 	User* findUserInDB(const std::string& username) const;
 
 public:

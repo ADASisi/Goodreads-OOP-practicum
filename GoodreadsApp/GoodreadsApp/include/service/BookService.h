@@ -10,12 +10,9 @@
 class BookService {
 private:
 	std::vector<std::shared_ptr<Book>>& booksDB;
-	int getLevenshteinDistance(const std::string& s1, const std::string& s2) const;
-
-	std::string toLower(std::string str) const;
+	
 public:
 	explicit BookService(std::vector<std::shared_ptr<Book>>& books);
-
 
 	void searchBooks(const std::string& query) const;
 	void addBookToProfile(Reader* currentReader, const std::string& bookName, int rating = -1);

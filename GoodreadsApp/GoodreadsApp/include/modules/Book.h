@@ -3,18 +3,7 @@
 #include <string>
 #include<vector>
 #include "Date.h"
-
-enum class Genre
-{
-	Romance,
-	Fantasy,
-	Fiction,
-	Thriller,
-	Mystery,
-	Horror,
-	Drama,
-	Adventure
-};
+#include "../utils/Genre.h"
 
 class Book
 {
