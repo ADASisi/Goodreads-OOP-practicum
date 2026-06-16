@@ -1,0 +1,20 @@
+#pragma once
+
+#include <string>
+
+class Message {
+public:
+	Message(const std::string sender, const std::string receiver, const std::string content, bool isRead);
+	bool getIsRead() const;
+
+	std::string getSender() const;
+	std::string getContent() const;
+
+	void markAsRead();
+
+private:
+	std::string sender;
+	std::string receiver;
+	std::string content;
+	bool isRead;
+};
