@@ -4,13 +4,7 @@
 #include<vector>
 #include <memory>
 #include "Date.h"
-
-enum class TypeUsers
-{
-	Reader,
-	Author,
-	Publisher
-};
+#include "../utils/TypeUsers.h"
 
 class User
 {

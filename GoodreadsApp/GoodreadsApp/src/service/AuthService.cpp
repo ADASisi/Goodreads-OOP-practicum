@@ -1,5 +1,4 @@
 #include "../../include/service/AuthService.h"
-#include "../helperFunctions.h"
 
 
 AuthService::AuthService(std::vector<std::unique_ptr<User>>& usersDB)
