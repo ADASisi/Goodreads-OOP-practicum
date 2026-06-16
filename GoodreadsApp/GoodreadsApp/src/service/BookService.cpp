@@ -5,7 +5,8 @@
 #include <algorithm>
 #include <cmath>
 
-BookService::BookService(std::vector<std::shared_ptr<Book>>& books) : booksDB(books) {}
+BookService::BookService(std::vector<std::shared_ptr<Book>>& books, SocialService* socialService)
+    : booksDB(books), socialService(socialService) {}
 
 std::shared_ptr<Book> BookService::findBookInDB(const std::string& title) const
 {
@@ -217,7 +218,7 @@ void BookService::showShelf(Reader* currentReader, Reader* targetReader, const s
     }
 }
 
-void BookService::publishBook(const std::string& title, const std::string& author, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres)
+void BookService::publishBook(const std::string& title, const std::string& author, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres, const std::string& publisherName)
 {
     if (findBookInDB(title) != nullptr)
     {
@@ -230,7 +231,10 @@ void BookService::publishBook(const std::string& title, const std::string& autho
 
     std::cout << "Successfully published the book '" << title << "' by " << author << "!\n";
 
-    SocialService::notifyNewBookPublished(...))
+    if (socialService)
+    {
+        socialService->notifyNewBookPublished(publisherName, author, title);
+    }
 }
 
 void BookService::addSynopsis(const std::string& title, const std::string& synopsis)
