@@ -10,11 +10,12 @@ class User
 {
 public:
 	User(std::string username, std::string password, Date reg);
-	//virtual ~User() = default;
+	virtual ~User() = default;
 
 	virtual std::unique_ptr<User> clone() const = 0;
 
 	virtual TypeUsers getType() const = 0;
+
 	std::string getUsername() const;
 	std::string getPassword() const;
 	Date getRegistrationDate() const;

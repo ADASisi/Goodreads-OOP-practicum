@@ -18,7 +18,7 @@ public:
     Reader(std::string username, std::string password, Date registerDate);
     TypeUsers getType() const override;
     std::unique_ptr<User> clone() const override;
-
+   
     const std::vector<std::shared_ptr<Book>>& getMyBooks() const;
     const std::vector<std::shared_ptr<Shelf>>& getShelves() const;
     const std::vector<std::shared_ptr<Book>>& getFavoriteBooks() const;

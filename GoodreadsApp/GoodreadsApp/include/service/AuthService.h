@@ -17,10 +17,8 @@ public:
 	bool registerUser(const std::string& username, const std::string& password, TypeUsers type);
 
 	bool login(const std::string& username, const std::string& password);
-	bool login(const std::string& username);
-	void logout();
 	User* getCurrentUser() const;
-
+	
 	std::vector<std::unique_ptr<User>>& getUsersDB();
 	const std::vector<std::unique_ptr<User>>& getUsersDB() const;
 };

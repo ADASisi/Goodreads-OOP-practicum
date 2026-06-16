@@ -61,12 +61,6 @@ void BookService::searchBooks(const std::string& query) const
 
 void BookService::addBookToProfile(Reader* currentReader, const std::string& bookName, int rating)
 {
-    if (!currentReader)
-    {
-        std::cout << "Error: No user is currently logged in.\n";
-        return;
-    }
-
     std::shared_ptr<Book> book = findBookInDB(bookName);
 
     if (!book)
@@ -77,7 +71,8 @@ void BookService::addBookToProfile(Reader* currentReader, const std::string& boo
 
     for (const auto& b : currentReader->getMyBooks())
     {
-        if (toLower(b->getTitle()) == toLower(bookName)) {
+        if (toLower(b->getTitle()) == toLower(bookName)) 
+        {
             std::cout << "Book is already in your profile.\n";
             return;
         }
@@ -93,8 +88,6 @@ void BookService::addBookToProfile(Reader* currentReader, const std::string& boo
 
 void BookService::createShelf(Reader* currentReader, const std::string& shelfName)
 {
-    if (!currentReader) return;
-
     if (currentReader->hasShelf(shelfName))
     {
         std::cout << "Shelf '" << shelfName << "' already exists!\n";
@@ -106,8 +99,6 @@ void BookService::createShelf(Reader* currentReader, const std::string& shelfNam
 
 void BookService::deleteShelf(Reader* currentReader, const std::string& shelfName)
 {
-    if (!currentReader) return;
-
     if (!currentReader->hasShelf(shelfName))
     {
         std::cout << "Error: Shelf '" << shelfName << "' does not exist.\n";
@@ -121,7 +112,6 @@ void BookService::deleteShelf(Reader* currentReader, const std::string& shelfNam
 
 void BookService::addBookToShelf(Reader* currentReader, const std::string& title, const std::string& shelfName)
 {
-    if (!currentReader) return;
     Shelf* shelf = currentReader->findShelf(shelfName);
     if (!shelf)
     {
@@ -151,8 +141,6 @@ void BookService::addBookToShelf(Reader* currentReader, const std::string& title
 
 void BookService::removeBookFromShelf(Reader* currentReader, const std::string& title, const std::string& shelfName)
 {
-    if (!currentReader) return;
-
     Shelf* shelf = currentReader->findShelf(shelfName);
     if (!shelf)
     {
@@ -166,8 +154,6 @@ void BookService::removeBookFromShelf(Reader* currentReader, const std::string& 
 
 void BookService::deleteBookFromProfile(Reader* currentReader, const std::string& bookName)
 {
-    if (!currentReader) return;
-
     currentReader->removeBookFromProfile(bookName);
 
     for (const auto& shelf : currentReader->getShelves())

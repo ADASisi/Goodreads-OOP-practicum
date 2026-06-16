@@ -9,7 +9,7 @@ private:
 	AuthService& authService;
 
 	User* findUserInDB(const std::string& username) const;
-
+	
 public:
 	SocialService(AuthService& authService);
 

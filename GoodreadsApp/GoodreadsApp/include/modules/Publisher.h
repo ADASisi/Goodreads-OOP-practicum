@@ -11,7 +11,7 @@ public:
 	std::unique_ptr<User> clone() const override;
 
 	TypeUsers getType() const override;
-
+	
 	void addAuthor(std::string authorName);
 	void removeAuthor(const std::string& authorName);
 
