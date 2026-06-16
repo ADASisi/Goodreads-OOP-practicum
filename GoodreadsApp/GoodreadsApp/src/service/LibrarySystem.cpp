@@ -1,5 +1,6 @@
 ﻿#include "../../include/service/LibrarySystem.h"
 #include "../../include/utils/HelperFunctions.h"
+#include "../../include/utils/ValidationExceptions.h"
 
 LibrarySystem::LibrarySystem()
     : authService(allUsers),
@@ -34,11 +35,16 @@ void LibrarySystem::executeCommand(const std::string& commandLine)
             std::cout << "Error: User type must be reader, author, or publisher.\n";
             return;
         }
-        if (authService.registerUser(args[1], args[2], type)) {
-            std::cout << "User registered successfully.\n";
+        try {
+            if (authService.registerUser(args[1], args[2], type)) {
+                std::cout << "User registered successfully.\n";
+            }
+            else {
+                std::cout << "Error: Could not register user. Username may already exist.\n";
+            }
         }
-        else {
-            std::cout << "Error: Could not register user. Username may already exist.\n";
+        catch (const ValidationException& ex) {
+            std::cout << "Error: " << ex.what() << "\n";
         }
         return;
     }

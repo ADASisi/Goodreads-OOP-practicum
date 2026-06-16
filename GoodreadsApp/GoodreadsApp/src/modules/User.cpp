@@ -1,9 +1,12 @@
 #include "../../include/modules/User.h"
+#include "../../include/utils/ValidationUtils.h"
 #include <algorithm>
 
 User::User(std::string username, std::string password, Date reg)
-	: username(username), password(password), registrationDate(reg)
+	: registrationDate(reg)
 {
+	setUsername(username);
+	setPassword(password);
 }
 
 std::string User::getUsername() const
@@ -23,11 +26,13 @@ Date User::getRegistrationDate() const
 
 void User::setUsername(const std::string& newUsername)
 {
+	ValidationUtils::validateUsername(newUsername);
 	this->username = newUsername;
 }
 
 void User::setPassword(const std::string& newPassword)
 {
+	ValidationUtils::validatePassword(newPassword);
 	this->password = newPassword;
 }
 

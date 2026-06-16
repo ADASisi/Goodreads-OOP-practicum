@@ -1,4 +1,5 @@
 #include "../../include/service/AuthService.h"
+#include "../../include/utils/ValidationUtils.h"
 
 
 AuthService::AuthService(std::vector<std::unique_ptr<User>>& usersDB)
@@ -7,6 +8,8 @@ AuthService::AuthService(std::vector<std::unique_ptr<User>>& usersDB)
 
 bool AuthService::registerUser(const std::string& username, const std::string& password, TypeUsers type)
 {
+	ValidationUtils::validateCredentials(username, password);
+
 	for (const auto& user : usersDB)
 	{
 		if (user->getUsername() == username)
