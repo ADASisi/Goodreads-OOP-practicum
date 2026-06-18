@@ -15,6 +15,11 @@ std::string Book::getAuthor() const
     return author;
 }
 
+std::string Book::getPublishingHouse() const
+{
+    return publishingHouse;
+}
+
 unsigned int Book::getCountRatings() const
 {
     return countRatings;
@@ -33,6 +38,11 @@ double Book::getSumRatings() const
 void Book::setSynopsis(const std::string& synopsis)
 {
     this->synopsis = synopsis;
+}
+
+void Book::setPublishingHouse(const std::string& publishingHouse)
+{
+    this->publishingHouse = publishingHouse;
 }
 
 void Book::addRating(double rating)

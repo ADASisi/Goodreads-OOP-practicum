@@ -12,10 +12,12 @@ public:
 
 	std::string getTitle() const;
 	std::string getAuthor() const;
+	std::string getPublishingHouse() const;
 	unsigned int getYear() const;
 	unsigned int getCountRatings() const;
 	double getSumRatings() const;
 	void setSynopsis(const std::string& synopsis);
+	void setPublishingHouse(const std::string& publishingHouse);
 
 	void addRating(double rating);
 	unsigned int getPageCount() const;

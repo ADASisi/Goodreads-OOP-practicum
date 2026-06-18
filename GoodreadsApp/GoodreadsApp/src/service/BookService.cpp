@@ -5,8 +5,7 @@
 #include <algorithm>
 #include <cmath>
 
-BookService::BookService(std::vector<std::shared_ptr<Book>>& books, SocialService* socialService)
-    : booksDB(books), socialService(socialService) {}
+BookService::BookService(std::vector<std::shared_ptr<Book>>& books) : booksDB(books) {}
 
 std::shared_ptr<Book> BookService::findBookInDB(const std::string& title) const
 {
@@ -167,7 +166,6 @@ void BookService::deleteBookFromProfile(Reader* currentReader, const std::string
 void BookService::showShelf(Reader* currentReader, Reader* targetReader, const std::string& shelfName) const
 {
     Reader* readerToSearch = targetReader ? targetReader : currentReader;
-    //proverka za priqtelstovo
 
     if (!readerToSearch)
     {
@@ -204,8 +202,14 @@ void BookService::showShelf(Reader* currentReader, Reader* targetReader, const s
     }
 }
 
-void BookService::publishBook(const std::string& title, const std::string& author, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres, const std::string& publisherName)
+void BookService::publishBook(Publisher* publisher, const std::string& title, const std::string& author, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres)
 {
+    if (!publisher)
+    {
+        std::cout << "Error: Publisher is required.\n";
+        return;
+    }
+
     if (findBookInDB(title) != nullptr)
     {
         std::cout << "Error: A book with title '" << title << "' already exists in the system.\n";
@@ -213,22 +217,30 @@ void BookService::publishBook(const std::string& title, const std::string& autho
     }
 
     auto newBook = std::make_shared<Book>(title, author, releaseDate, pages, genres);
+    newBook->setPublishingHouse(publisher->getUsername());
     booksDB.push_back(newBook);
 
     std::cout << "Successfully published the book '" << title << "' by " << author << "!\n";
-
-    if (socialService)
-    {
-        socialService->notifyNewBookPublished(publisherName, author, title);
-    }
 }
 
-void BookService::addSynopsis(const std::string& title, const std::string& synopsis)
+void BookService::addSynopsis(Publisher* publisher, const std::string& title, const std::string& synopsis)
 {
+    if (!publisher)
+    {
+        std::cout << "Error: Publisher is required.\n";
+        return;
+    }
+
     std::shared_ptr<Book> book = findBookInDB(title);
     if (!book)
     {
         std::cout << "Error: Book '" << title << "' not found.\n";
+        return;
+    }
+
+    if (toLower(book->getPublishingHouse()) != toLower(publisher->getUsername()))
+    {
+        std::cout << "Error: Only the publisher who published this book can add a synopsis.\n";
         return;
     }
 

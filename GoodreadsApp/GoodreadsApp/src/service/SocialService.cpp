@@ -20,7 +20,7 @@ User* SocialService::findUserInDB(const std::string& username) const {
 
 Reader* SocialService::currentReaderOrError(const std::string& errorMessage) const
 {
-    Reader* reader = authService.getCurrentReader();
+    Reader* reader = dynamic_cast<Reader*>(authService.getCurrentUser());
     if (!reader) {
         std::cout << errorMessage << "\n";
     }
@@ -29,7 +29,7 @@ Reader* SocialService::currentReaderOrError(const std::string& errorMessage) con
 
 Author* SocialService::currentAuthorOrError(const std::string& errorMessage) const
 {
-    Author* author = authService.getCurrentAuthor();
+    Author* author = dynamic_cast<Author*>(authService.getCurrentUser());
     if (!author) {
         std::cout << errorMessage << "\n";
     }
@@ -38,7 +38,7 @@ Author* SocialService::currentAuthorOrError(const std::string& errorMessage) con
 
 Publisher* SocialService::currentPublisherOrError(const std::string& errorMessage) const
 {
-    Publisher* publisher = authService.getCurrentPublisher();
+    Publisher* publisher = dynamic_cast<Publisher*>(authService.getCurrentUser());
     if (!publisher) {
         std::cout << errorMessage << "\n";
     }
@@ -48,30 +48,29 @@ Publisher* SocialService::currentPublisherOrError(const std::string& errorMessag
 Reader* SocialService::findReaderInDB(const std::string& username) const
 {
     User* user = findUserInDB(username);
-    return user ? user->asReader() : nullptr;
+    return dynamic_cast<Reader*>(user);
 }
 
 Author* SocialService::findAuthorInDB(const std::string& username) const
 {
     User* user = findUserInDB(username);
-    return user ? user->asAuthor() : nullptr;
+    return dynamic_cast<Author*>(user);
 }
 
 Publisher* SocialService::findPublisherInDB(const std::string& username) const
 {
     User* user = findUserInDB(username);
-    return user ? user->asPublisher() : nullptr;
+    return dynamic_cast<Publisher*>(user);
 }
 
-void SocialService::followUser(const std::string& username)
+void SocialService::followUser(User* targetUser)
 {
     Reader* currentReader = currentReaderOrError("Error: You must be logged in to follow users.");
     if (!currentReader) return;
 
-    User* targetUser = findUserInDB(username);
     if (!targetUser)
     {
-        std::cout << "Error: User '" << username << "' not found.\n";
+        std::cout << "Error: User not found.\n";
         return;
     }
 
@@ -91,7 +90,7 @@ void SocialService::followUser(const std::string& username)
 
     targetUser->addFollower(currentReader);
 
-    Reader* targetReader = findReaderInDB(username);
+    Reader* targetReader = dynamic_cast<Reader*>(targetUser);
     if (targetReader)
     {
         Message msg(currentReader->getUsername(), targetReader->getUsername(), "Started following you.", false);
@@ -117,7 +116,7 @@ void SocialService::showFriends(const std::string& targetUsername) const {
 
         readerToView = findReaderInDB(targetUsername);
         if (!readerToView) {
-            std::cout << "Error: User '" << targetUsername << "' is not a reader or author.\n";
+            std::cout << "Error: User '" << targetUsername << "' is not a reader.\n";
             return;
         }
     }
@@ -141,20 +140,19 @@ void SocialService::showFriends(const std::string& targetUsername) const {
     }
 }
 
-void SocialService::showFollowers() const {
-    User* currentUser = authService.getCurrentUser();
-    if (!currentUser) {
-        std::cout << "Error: You must be logged in to view your followers.\n";
+void SocialService::showFollowers(Author* author) const {
+    if (!author) {
+        std::cout << "Error: Author is required to view followers.\n";
         return;
     }
 
-    std::cout << "Followers of " << currentUser->getUsername() << ":\n";
+    std::cout << "Followers of " << author->getUsername() << ":\n";
     bool hasFollowers = false;
 
     const auto& db = authService.getUsersDB();
     for (auto& user : db) {
-        Reader* reader = user->asReader();
-        if (reader && reader->isFollowing(currentUser)) {
+        Reader* reader = dynamic_cast<Reader*>(user.get());
+        if (reader && reader->isFollowing(author)) {
             std::cout << "- " << reader->getUsername() << "\n";
             hasFollowers = true;
         }
@@ -165,12 +163,15 @@ void SocialService::showFollowers() const {
     }
 }
 
-void SocialService::addBirthday(const std::string& date) {
+void SocialService::addBirthday(const std::string& date) 
+{
     Reader* currentReader = currentReaderOrError("Error: You must be logged in as a reader or author to update your birthday.");
     if (!currentReader) return;
 
-    if (isBlank(date)) {
-        if (currentReader->getBirthday().has_value()) {
+    if (isBlank(date)) 
+    {
+        if (currentReader->getBirthday().has_value()) 
+        {
             currentReader->clearBirthday();
             std::cout << "Birthday information deleted from your profile.\n";
         }
@@ -190,22 +191,27 @@ void SocialService::addBirthday(const std::string& date) {
     std::cout << "Birthday updated to " << formatDate(birthday) << ".\n";
 }
 
-void SocialService::showProfile(const std::string& reader) const {
+void SocialService::showProfile(const std::string& reader) const 
+{
     Reader* readerToView = nullptr;
 
-    if (reader.empty()) {
+    if (reader.empty()) 
+    {
         readerToView = currentReaderOrError("Error: You must be logged in as a reader or author to view your profile.");
         if (!readerToView) return;
     }
-    else {
+    else 
+    {
         User* targetUser = findUserInDB(reader);
-        if (!targetUser) {
+        if (!targetUser) 
+        {
             std::cout << "Error: User '" << reader << "' not found.\n";
             return;
         }
 
         readerToView = findReaderInDB(reader);
-        if (!readerToView) {
+        if (!readerToView) 
+        {
             std::cout << "Error: User '" << reader << "' is not a reader or author.\n";
             return;
         }
@@ -214,30 +220,39 @@ void SocialService::showProfile(const std::string& reader) const {
     std::cout << "Profile of " << readerToView->getUsername() << ":\n";
     std::cout << "Name: " << readerToView->getUsername() << "\n";
 
-    if (readerToView->getBirthday().has_value()) {
+    if (readerToView->getBirthday().has_value())
+    {
         std::cout << "Birthday: " << formatDate(readerToView->getBirthday().value()) << "\n";
     }
-    else {
+    else 
+    {
         std::cout << "Birthday: (Not set)\n";
     }
 
     std::cout << "Shelves:\n";
-    if (readerToView->getShelves().empty()) {
+    if (readerToView->getShelves().empty()) 
+    {
         std::cout << "- (No shelves)\n";
     }
-    else {
-        for (const auto& shelf : readerToView->getShelves()) {
+    else 
+    {
+        for (const auto& shelf : readerToView->getShelves()) 
+        {
             std::cout << "- " << shelf->getName() << " (" << shelf->getBooks().size() << " books)\n";
         }
     }
 
     std::cout << "Favorite books:\n";
-    if (readerToView->getFavoriteBooks().empty()) {
+    if (readerToView->getFavoriteBooks().empty()) 
+    {
         std::cout << "- (No favorite books)\n";
     }
-    else {
-        for (const auto& book : readerToView->getFavoriteBooks()) {
-            if (book) {
+    else 
+    {
+        for (const auto& book : readerToView->getFavoriteBooks()) 
+        {
+            if (book) 
+            {
                 std::cout << "- " << book->getTitle() << " by " << book->getAuthor() << "\n";
             }
         }
@@ -263,9 +278,25 @@ void SocialService::showInbox(const std::string& filter) const {
     bool displayedAny = false;
 
     for (const auto& msg : inbox) {
-        if (lowerFilter == "unread" && msg.getIsRead())
-        {
-            index++; continue;
+        bool showMessage = true;
+        if (!lowerFilter.empty()) {
+            bool isFriendRequest = msg.getContent().find("Started following you.") != std::string::npos;
+            bool isJobOffer = msg.getContent().find("JOB_OFFER:") == 0;
+
+            if (lowerFilter == "friend" || lowerFilter == "friends" || lowerFilter == "friend-requests") {
+                showMessage = isFriendRequest;
+            }
+            else if (lowerFilter == "job" || lowerFilter == "job-offers") {
+                showMessage = isJobOffer;
+            }
+            else {
+                showMessage = false;
+            }
+        }
+
+        if (!showMessage) {
+            index++;
+            continue;
         }
 
         std::cout << "[" << index << "] ";
@@ -301,7 +332,7 @@ void SocialService::deleteMessage(int index) {
     if (!currentReader) return;
     auto& inbox = currentReader->getInbox();
 
-    if (index < 0 || index >= static_cast<int>(inbox.size())) {
+    if (index < 0 || index >= inbox.size()) {
         std::cout << "Error: Invalid message index.\n";
         return;
     }
@@ -380,22 +411,34 @@ void SocialService::leavePublisher(const std::string& publisherUsername)
     std::cout << "You successfully terminated your contract with " << publisherUsername << ".\n";
 }
 
-void SocialService::notifyNewBookPublished(const std::string& publisherName, const std::string& authorName, const std::string& bookTitle) {
-    User* auth = findUserInDB(authorName);
-    User* pub = findUserInDB(publisherName);
-
-    std::string notification = "Alert: New book published! '" + bookTitle + "' by " + authorName;
-    if (pub) notification += " (Publisher: " + publisherName + ")";
-
+void SocialService::notifyNewBookPublished(Publisher* publisher, Author* author, const std::string& bookTitle) 
+{
     const auto& db = authService.getUsersDB();
-    for (const auto& user : db) {
-        Reader* reader = user->asReader();
+    for (const auto& user : db)
+    {
+        Reader* reader = dynamic_cast<Reader*>(user.get());
         if (!reader) continue;
 
-        bool followsAuthor = auth ? reader->isFollowing(auth) : false;
-        bool followsPublisher = pub ? reader->isFollowing(pub) : false;
+        bool followsAuthor = author ? reader->isFollowing(author) : false;
+        bool followsPublisher = publisher ? reader->isFollowing(publisher) : false;
 
-        if (followsAuthor || followsPublisher) {
+        if (followsAuthor || followsPublisher) 
+        {
+            std::string notification = "New book published by ";
+            if (followsAuthor && followsPublisher) 
+            {
+                notification += "author " + author->getUsername() + " and publisher " + publisher->getUsername();
+            }
+            else if (followsAuthor) 
+            {
+                notification += "author " + author->getUsername();
+            }
+            else 
+            {
+                notification += "publisher " + publisher->getUsername();
+            }
+            notification += ": " + bookTitle;
+
             Message msg("System", reader->getUsername(), notification, false);
             reader->addMessageToInbox(msg);
         }
