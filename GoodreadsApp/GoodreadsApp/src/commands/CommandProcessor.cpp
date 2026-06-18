@@ -1,4 +1,5 @@
 #include "../../include/commands/CommandProcessor.h"
+#include "../../include/commands/CommandUtils.h"
 #include "../../include/commands/AcceptOffer.h"
 #include "../../include/commands/AddBirthday.h"
 #include "../../include/commands/AddBook.h"
@@ -11,6 +12,7 @@
 #include "../../include/commands/Follow.h"
 #include "../../include/commands/Followers.h"
 #include "../../include/commands/Friends.h"
+#include "../../include/commands/Help.h"
 #include "../../include/commands/LeavePublisher.h"
 #include "../../include/commands/Login.h"
 #include "../../include/commands/Logout.h"
@@ -24,6 +26,8 @@
 #include "../../include/commands/ShowInbox.h"
 #include "../../include/commands/ShowShelf.h"
 #include "../../include/utils/HelperFunctions.h"
+#include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <sstream>
 
@@ -38,6 +42,7 @@ static std::vector<std::string> tokenizeCommand(const std::string& line)
 
 CommandProcessor::CommandProcessor(AuthService& auth, BookService& books, SocialService& social)
 {
+	add("help", std::make_unique<Help>(auth));
 	add("register", std::make_unique<Register>(auth));
 	add("login", std::make_unique<Login>(auth));
 	add("logout", std::make_unique<LogOut>(auth));
@@ -74,25 +79,38 @@ void CommandProcessor::execute(const std::string& line)
 {
 	std::vector<std::string> args = tokenizeCommand(line);
 	if (args.empty()) return;
-	auto it = commandMap.find(toLower(args[0]));
-	if (it == commandMap.end()) {
-		std::cout << "Error: Unknown command.\n";
-		return;
+	try {
+		auto it = commandMap.find(toLower(args[0]));
+		if (it == commandMap.end()) {
+			fail("Error: Unknown command.");
+		}
+		it->second->execute(args);
 	}
-	it->second->execute(args);
+	catch (const std::exception& error) {
+		std::cout << error.what() << "\n";
+	}
 }
 
 void CommandProcessor::run()
 {
 	std::cout << "Goodreads command system started. Type exit to stop.\n";
 	std::string line;
-	while (std::cout << "> " && std::getline(std::cin, line)) {
+	while (std::cout << "\n> " && std::getline(std::cin, line)) {
 		std::vector<std::string> args = tokenizeCommand(line);
 		if (!args.empty() && toLower(args[0]) == "exit") {
-			if (args.size() != 1) { std::cout << "Error: Usage: exit\n"; continue; }
+			if (args.size() != 1) {
+				try {
+					fail("Error: Usage: exit");
+				}
+				catch (const std::exception& error) {
+					std::cout << error.what() << "\n";
+				}
+				continue;
+			}
 			std::cout << "Exiting.\n";
 			break;
 		}
 		execute(line);
+		
 	}
 }

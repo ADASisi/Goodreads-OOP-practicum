@@ -1,5 +1,5 @@
 #include "../../include/commands/Offer.h"
-#include <iostream>
+#include "../../include/commands/CommandUtils.h"
 
 Offer::Offer(AuthService& a, SocialService& s) : authService(a), socialService(s) {}
 
@@ -7,8 +7,7 @@ void Offer::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2)
 	{ 
-		std::cout << "Error: Usage: offer <author>\n"; 
-		return; 
+		fail("Error: Usage: offer <author>");
 	}
 	socialService.sendOffer(args[1]);
 }

@@ -8,16 +8,18 @@ void AddBook::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 3 && args.size() != 4) 
 	{ 
-		std::cout << "Error: Usage: add-book <bookName> <status> [rating]\n"; 
-		return; 
+		fail("Error: Usage: add-book <bookName> <status> [rating]");
+	}
+	if (!isValidBookTitle(args[1]))
+	{
+		fail("Error: Book name must be 1 to 100 characters long.");
 	}
 	std::string status = toLower(args[2]);
 	if (status != "plan-to-read" && status != "reading" && status != "paused" && status != "dropped") 
 	{
-		std::cout << "Error: Invalid status.\n"; 
-		return;
+		fail("Error: Invalid status.");
 	}
-	int rating = -1;
+	double rating = -1;
 	if (args.size() == 4) 
 	{
 		try 
@@ -28,10 +30,9 @@ void AddBook::execute(const std::vector<std::string>& args)
 		}
 		catch (...) 
 		{ 
-			std::cout << "Error: Rating must be from 0 to 10.\n"; 
-			return; 
+			fail("Error: Rating must be from 0 to 10.");
 		}
 	}
 	Reader* reader = requireReader(authService, "Error: Reader or author login required.");
-	if (reader) bookService.addBookToProfile(reader, args[1], rating);
+	bookService.addBookToProfile(reader, args[1], rating);
 }

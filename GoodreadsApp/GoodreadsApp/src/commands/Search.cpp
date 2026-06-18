@@ -7,8 +7,11 @@ void Search::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2) 
 	{ 
-		std::cout << "Error: Usage: search <name>\n"; 
-		return; 
+		fail("Error: Usage: search <name>");
+	}
+	if (isBlank(args[1]))
+	{
+		fail("Error: Search name cannot be empty.");
 	}
 	std::string query = toLower(args[1]);
 	std::cout << "Users:\n";

@@ -9,13 +9,11 @@ void Follow::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2) 
 	{ 
-		std::cout << "Error: Usage: follow <username>\n"; 
-		return; 
+		fail("Error: Usage: follow <username>");
 	}
 	User* targetUser = findUser(authService, args[1]);
 	if (!targetUser) {
-		std::cout << "Error: User '" << args[1] << "' not found.\n";
-		return;
+		fail("Error: User '" + args[1] + "' not found.");
 	}
 	socialService.followUser(targetUser);
 }

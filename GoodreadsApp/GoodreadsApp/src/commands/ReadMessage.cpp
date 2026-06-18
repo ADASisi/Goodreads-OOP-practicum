@@ -7,10 +7,9 @@ void ReadMessage::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2) 
 	{ 
-		std::cout << "Error: Usage: read-msg <index>\n"; 
-		return; 
+		fail("Error: Usage: read-msg <index>");
 	}
 	int index; 
-	if (parseMessageIndex(args[1], index)) 
-		socialService.readMessage(index);
+	parseMessageIndex(args[1], index);
+	socialService.readMessage(index);
 }

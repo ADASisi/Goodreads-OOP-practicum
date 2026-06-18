@@ -6,7 +6,6 @@ ShowShelf::ShowShelf(AuthService& a, BookService& b) : authService(a), bookServi
 void ShowShelf::execute(const std::vector<std::string>& args) 
 {
 	Reader* current = requireReader(authService, "Error: Reader or author login required.");
-	if (!current) return;
 	if (args.size() == 2) 
 	{ 
 		bookService.showShelf(current, current, args[1]);
@@ -14,19 +13,16 @@ void ShowShelf::execute(const std::vector<std::string>& args)
 	}
 	if (args.size() != 3) 
 	{ 
-		std::cout << "Error: Usage: show-shelf [reader] <name>\n"; 
-		return; 
+		fail("Error: Usage: show-shelf [reader] <name>");
 	}
 	Reader* target = dynamic_cast<Reader*>(findUser(authService, args[1]));
 	if (!target) 
 	{ 
-		std::cout << "Error: Reader not found.\n"; 
-		return; 
+		fail("Error: Reader not found.");
 	}
 	if (!current->isFollowing(target) || !target->isFollowing(current)) 
 	{
-		std::cout << "Error: Access denied. You must be friends.\n"; 
-		return;
+		fail("Error: Access denied. You must be friends.");
 	}
 	bookService.showShelf(current, target, args[2]);
 }

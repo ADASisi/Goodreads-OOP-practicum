@@ -7,9 +7,8 @@ void CreateShelf::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2) 
 	{ 
-		std::cout << "Error: Usage: create-shelf <name>\n"; 
-		return; 
+		fail("Error: Usage: create-shelf <name>");
 	}
 	Reader* r = requireReader(authService, "Error: Reader or author login required.");
-	if (r) bookService.createShelf(r, args[1]);
+	bookService.createShelf(r, args[1]);
 }

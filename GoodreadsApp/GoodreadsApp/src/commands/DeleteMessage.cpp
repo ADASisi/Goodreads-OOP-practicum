@@ -7,10 +7,9 @@ void DeleteMessage::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2) 
 	{ 
-		std::cout << "Error: Usage: delete-msg <index>\n"; 
-		return; 
+		fail("Error: Usage: delete-msg <index>");
 	}
 	int index; 
-	if (parseMessageIndex(args[1], index))
-		socialService.deleteMessage(index);
+	parseMessageIndex(args[1], index);
+	socialService.deleteMessage(index);
 }

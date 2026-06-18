@@ -7,9 +7,12 @@ void DeleteBook::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2) 
 	{ 
-		std::cout << "Error: Usage: delete-book <bookName>\n"; 
-		return;
+		fail("Error: Usage: delete-book <bookName>");
+	}
+	if (!isValidBookTitle(args[1]))
+	{
+		fail("Error: Book name must be 1 to 100 characters long.");
 	}
 	Reader* r = requireReader(authService, "Error: Reader or author login required.");
-	if (r) bookService.deleteBookFromProfile(r, args[1]);
+	bookService.deleteBookFromProfile(r, args[1]);
 }

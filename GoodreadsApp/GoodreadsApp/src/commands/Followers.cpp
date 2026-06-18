@@ -8,9 +8,8 @@ void Followers::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 1) 
 	{ 
-		std::cout << "Error: Usage: followers\n"; 
-		return; 
+		fail("Error: Usage: followers");
 	}
 	Author* author = requireAuthor(authService, "Error: Only authors can view followers with this command.");
-	if (author) socialService.showFollowers(author);
+	socialService.showFollowers(author);
 }

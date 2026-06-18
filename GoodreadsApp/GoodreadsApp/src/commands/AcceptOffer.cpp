@@ -7,10 +7,9 @@ void AcceptOffer::execute(const std::vector<std::string>& args)
 {
 	if (args.size() != 2) 
 	{ 
-		std::cout << "Error: Usage: accept-offer <index>\n"; 
-		return; 
+		fail("Error: Usage: accept-offer <index>");
 	}
 	int index; 
-	if (parseMessageIndex(args[1], index)) 
-		socialService.acceptOffer(index);
+	parseMessageIndex(args[1], index);
+	socialService.acceptOffer(index);
 }

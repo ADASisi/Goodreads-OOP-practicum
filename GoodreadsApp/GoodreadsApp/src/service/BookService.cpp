@@ -59,7 +59,7 @@ void BookService::searchBooks(const std::string& query) const
 }
 
 
-void BookService::addBookToProfile(Reader* currentReader, const std::string& bookName, int rating)
+void BookService::addBookToProfile(Reader* currentReader, const std::string& bookName, double rating)
 {
     std::shared_ptr<Book> book = findBookInDB(bookName);
 
