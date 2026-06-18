@@ -7,6 +7,7 @@
 #include <vector>
 #include "../../include/modules/Date.h"
 #include "../../include/utils/Genre.h"
+#include "../../include/utils/Status.h"
 #include "../../include/utils/TypeUsers.h"
 
 namespace {
@@ -212,6 +213,17 @@ namespace {
         else if (name == "horror") genre = Genre::Horror;
         else if (name == "drama") genre = Genre::Drama;
         else if (name == "adventure") genre = Genre::Adventure;
+        else if (name == "science-fiction" || name == "sci-fi" || name == "scifi") genre = Genre::ScienceFiction;
+        else if (name == "biography") genre = Genre::Biography;
+        else if (name == "history") genre = Genre::History;
+        else if (name == "poetry") genre = Genre::Poetry;
+        else if (name == "children") genre = Genre::Children;
+        else if (name == "young-adult" || name == "ya") genre = Genre::YoungAdult;
+        else if (name == "classic") genre = Genre::Classic;
+        else if (name == "non-fiction" || name == "nonfiction") genre = Genre::NonFiction;
+        else if (name == "comedy") genre = Genre::Comedy;
+        else if (name == "crime") genre = Genre::Crime;
+        else if (name == "philosophy") genre = Genre::Philosophy;
         else return false;
         return true;
     }
@@ -227,6 +239,17 @@ namespace {
         case Genre::Horror: return "horror";
         case Genre::Drama: return "drama";
         case Genre::Adventure: return "adventure";
+        case Genre::ScienceFiction: return "science-fiction";
+        case Genre::Biography: return "biography";
+        case Genre::History: return "history";
+        case Genre::Poetry: return "poetry";
+        case Genre::Children: return "children";
+        case Genre::YoungAdult: return "young-adult";
+        case Genre::Classic: return "classic";
+        case Genre::NonFiction: return "non-fiction";
+        case Genre::Comedy: return "comedy";
+        case Genre::Crime: return "crime";
+        case Genre::Philosophy: return "philosophy";
         }
         return "none";
     }
@@ -257,5 +280,38 @@ namespace {
         }
         return false;
 	}
+
+    std::string statusToString(Status status)
+    {
+        switch (status) {
+        case Status::PlanToRead: return "plan-to-read";
+        case Status::Reading: return "reading";
+        case Status::Paused: return "paused";
+        case Status::Dropped: return "dropped";
+        }
+        return "plan-to-read";
+    }
+
+    bool parseStatus(const std::string& text, Status& status)
+    {
+        std::string value = toLower(text);
+        if (value == "plan-to-read") {
+            status = Status::PlanToRead;
+            return true;
+        }
+        if (value == "reading") {
+            status = Status::Reading;
+            return true;
+        }
+        if (value == "paused") {
+            status = Status::Paused;
+            return true;
+        }
+        if (value == "dropped") {
+            status = Status::Dropped;
+            return true;
+        }
+        return false;
+    }
 
 }

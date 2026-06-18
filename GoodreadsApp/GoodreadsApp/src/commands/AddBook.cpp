@@ -14,8 +14,8 @@ void AddBook::execute(const std::vector<std::string>& args)
 	{
 		fail("Error: Book name must be 1 to 100 characters long.");
 	}
-	std::string status = toLower(args[2]);
-	if (status != "plan-to-read" && status != "reading" && status != "paused" && status != "dropped") 
+	Status status = Status::PlanToRead;
+	if (!parseStatus(args[2], status))
 	{
 		fail("Error: Invalid status.");
 	}
@@ -25,7 +25,7 @@ void AddBook::execute(const std::vector<std::string>& args)
 		try 
 		{
 			size_t parsed = 0;
-			rating = std::stoi(args[3], &parsed);
+			rating = std::stod(args[3], &parsed);
 			if (parsed != args[3].size() || rating < 0 || rating > 10) {
 				fail("Error: Rating must be from 0 to 10.");
 			}
@@ -36,5 +36,5 @@ void AddBook::execute(const std::vector<std::string>& args)
 		}
 	}
 	Reader* reader = requireReader(authService, "Error: Reader or author login required.");
-	bookService.addBookToProfile(reader, args[1], rating);
+	bookService.addBookToProfile(reader, args[1], status, rating);
 }

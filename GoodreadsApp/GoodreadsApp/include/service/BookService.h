@@ -15,7 +15,7 @@ public:
 	explicit BookService(std::vector<std::shared_ptr<Book>>& books);
 
 	void searchBooks(const std::string& query) const;
-	void addBookToProfile(Reader* currentReader, const std::string& bookName, double rating = -1);
+	void addBookToProfile(Reader* currentReader, const std::string& bookName, Status status = Status::PlanToRead, double rating = -1);
 	void publishBook(Publisher* publisher, const std::string& title, const std::string& author, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres);
 	void addSynopsis(Publisher* publisher, const std::string& title, const std::string& synopsis);
 

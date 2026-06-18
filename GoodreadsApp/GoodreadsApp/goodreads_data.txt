@@ -2,11 +2,16 @@ USER "aniantova" "Aniantova*19" reader
 USER "anatod" "Ana*todi1039" author
 USER "engmont" "emnontI*1935" publisher
 USER "simeon" "simeonI*1939" reader
-BOOK "kom" "anatod" "engmont" "12.6.2040" 183 0 0 romance
-BOOK "som" "anatod" "engmont" "15.7.2020" 384 0 0 romance
+BOOK "kom" "anatod" "engmont" "12.6.2040" 183 8 1 "ygWSDUHA WIEFJWO WEOFJI JQEPFOJ SPIFVEMEO\\ IKVMJO" romance
+BOOK "som" "anatod" "engmont" "15.7.2020" 384 3.4 1 "edfhjwokdaesljfdwdkaelffds[epkolkefoopfawkjiijawdfiaojmlksndvks aefijocjweoifn awjefwiefjoiw nefcwhefu" romance
 BIRTHDAY "aniantova" 18 9 2010
+READER_BOOK "aniantova" "kom" plan-to-read
 BIRTHDAY "anatod" 3 5 2010
-AUTHOR_PUBLISHER "anatod" "engmont"
+READER_BOOK "simeon" "som" plan-to-read
+FOLLOW "simeon" "aniantova"
 FOLLOW "simeon" "anatod"
+FOLLOW "anatod" "engmont"
+FOLLOW "anatod" "simeon"
 MESSAGE "anatod" "simeon" 0 "Started following you."
 MESSAGE "simeon" "System" 0 "New book published by author anatod: som"
+MESSAGE "simeon" "anatod" 0 "Started following you."

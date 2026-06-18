@@ -59,7 +59,7 @@ void BookService::searchBooks(const std::string& query) const
 }
 
 
-void BookService::addBookToProfile(Reader* currentReader, const std::string& bookName, double rating)
+void BookService::addBookToProfile(Reader* currentReader, const std::string& bookName, Status status, double rating)
 {
     std::shared_ptr<Book> book = findBookInDB(bookName);
 
@@ -75,13 +75,20 @@ void BookService::addBookToProfile(Reader* currentReader, const std::string& boo
             throw BadRequestException("Error: Book is already in your profile.");
         }
     }
-    currentReader->addBookToProfile(book);
+    currentReader->addBookToProfile(book, status);
 
     if (rating != -1)
     {
         book->addRating(rating);
     }
 
+    std::cout << "Book '" << book->getTitle() << "' added to your profile";
+    std::cout << " as " << statusToString(status);
+    if (rating != -1)
+    {
+        std::cout << " with rating " << rating;
+    }
+    std::cout << ".\n";
 }
 
 void BookService::createShelf(Reader* currentReader, const std::string& shelfName)

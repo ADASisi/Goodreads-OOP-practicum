@@ -65,6 +65,7 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
     struct ReaderBookRecord {
         std::string username;
         std::string title;
+        Status status = Status::PlanToRead;
     };
     struct AuthorPublisherRecord {
         std::string author;
@@ -118,6 +119,7 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
             unsigned int pages = 0;
             double sumRatings = 0.0;
             unsigned int countRatings = 0;
+            std::string synopsis;
             std::vector<Genre> genres;
 
             if (!(input >> std::quoted(title) >> std::quoted(author))) {
@@ -151,6 +153,11 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
             }
 
             if (input >> sumRatings >> countRatings) {
+                input >> std::ws;
+                if (input.peek() == '"') {
+                    input >> std::quoted(synopsis);
+                }
+
                 std::string genreText;
                 while (input >> genreText) {
                     Genre genre;
@@ -167,6 +174,9 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
 
             auto book = std::make_shared<Book>(title, author, Date(day, month, year), pages, genres);
             book->setPublishingHouse(publisher);
+            if (!synopsis.empty()) {
+                book->setSynopsis(synopsis);
+            }
             if (countRatings > 0) {
                 double rating = countRatings == 0 ? 0.0 : sumRatings / countRatings;
                 for (unsigned int i = 0; i < countRatings; i++) {
@@ -205,6 +215,11 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
             ReaderBookRecord record;
             if (!(input >> std::quoted(record.username) >> std::quoted(record.title))) {
                 std::cout << "Error: Invalid READER_BOOK record in database.\n";
+                return false;
+            }
+            std::string statusText;
+            if (input >> statusText && !parseStatus(statusText, record.status)) {
+                std::cout << "Error: Invalid READER_BOOK status in database.\n";
                 return false;
             }
             readerBooks.push_back(record);
@@ -247,7 +262,7 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
     for (const auto& record : readerBooks) {
         Reader* reader = dynamic_cast<Reader*>(findUser(auth, record.username));
         std::shared_ptr<Book> book = findBook(books, record.title);
-        if (reader && book) reader->addBookToProfile(book);
+        if (reader && book) reader->addBookToProfile(book, record.status);
     }
 
     for (const auto& record : authorPublishers) {
@@ -285,7 +300,7 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
 
     for (const auto& record : messages) {
         Reader* receiver = dynamic_cast<Reader*>(findUser(auth, record.receiver));
-        if (receiver) receiver->addMessageToInbox(Message(record.sender, record.receiver, record.content, record.isRead));
+        if (receiver) receiver->addMessageToInbox(Message::restoreFromFile(record.sender, record.receiver, record.content, record.isRead));
     }
 
     std::cout << "Data loaded successfully from " << databaseFilePath << ".\n";
@@ -316,6 +331,7 @@ bool FileManager::saveData(const AuthService& auth, const BookService& books, co
             << book->getPageCount() << " "
             << book->getSumRatings() << " "
             << book->getCountRatings() << " "
+            << std::quoted(book->getSynopsis()) << " "
             << book->getGenres() << "\n";
     }
 
@@ -332,11 +348,12 @@ bool FileManager::saveData(const AuthService& auth, const BookService& books, co
                 << date.getYear() << "\n";
         }
 
-        for (const auto& book : reader->getMyBooks()) {
-            if (book) {
+        for (const auto& entry : reader->getProfileBooks()) {
+            if (entry.book) {
                 file << "READER_BOOK "
                     << std::quoted(reader->getUsername()) << " "
-                    << std::quoted(book->getTitle()) << "\n";
+                    << std::quoted(entry.book->getTitle()) << " "
+                    << statusToString(entry.status) << "\n";
             }
         }
 

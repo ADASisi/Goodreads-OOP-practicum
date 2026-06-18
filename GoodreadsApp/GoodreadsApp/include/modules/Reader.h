@@ -11,6 +11,11 @@
 #include <iostream>
 #include <optional>
 
+struct ReaderBook
+{
+    std::shared_ptr<Book> book;
+    Status status = Status::PlanToRead;
+};
 
 class Reader : public User
 {
@@ -20,6 +25,7 @@ public:
     std::unique_ptr<User> clone() const override;
    
     const std::vector<std::shared_ptr<Book>>& getMyBooks() const;
+    const std::vector<ReaderBook>& getProfileBooks() const;
     const std::vector<std::shared_ptr<Shelf>>& getShelves() const;
     const std::vector<std::shared_ptr<Book>>& getFavoriteBooks() const;
     const std::optional<Date>& getBirthday() const;
@@ -29,7 +35,7 @@ public:
     std::vector<Message>& getInbox();
     void addMessageToInbox(const Message& msg);
 
-    void addBookToProfile(std::shared_ptr<Book> book);
+    void addBookToProfile(std::shared_ptr<Book> book, Status status = Status::PlanToRead);
 
     void removeBookFromProfile(const std::string& bookTitle);
 
@@ -43,6 +49,7 @@ public:
 
 private:
     std::vector<std::shared_ptr<Book>> myBooks;
+    std::vector<ReaderBook> profileBooks;
     std::vector<std::shared_ptr<Shelf>> shelves;
     std::vector<std::shared_ptr<Book>> favoriteBooks;
     std::optional<Date> birthday;

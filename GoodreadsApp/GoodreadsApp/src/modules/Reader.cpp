@@ -18,6 +18,11 @@ const std::vector<std::shared_ptr<Book>>& Reader::getMyBooks() const
     return myBooks;
 }
 
+const std::vector<ReaderBook>& Reader::getProfileBooks() const
+{
+    return profileBooks;
+}
+
 const std::vector<std::shared_ptr<Shelf>>& Reader::getShelves() const
 {
     return shelves;
@@ -53,8 +58,9 @@ void Reader::addMessageToInbox(const Message& msg)
     inbox.push_back(msg);
 }
 
-void Reader::addBookToProfile(std::shared_ptr<Book> book)
+void Reader::addBookToProfile(std::shared_ptr<Book> book, Status status)
 {
+    profileBooks.push_back({ book, status });
     myBooks.push_back(book);
 }
 
@@ -72,6 +78,17 @@ void Reader::removeBookFromProfile(const std::string& bookTitle)
                 return currentTitle == target;
             }),
         myBooks.end()
+    );
+
+    profileBooks.erase(
+        std::remove_if(profileBooks.begin(), profileBooks.end(),
+            [&](const ReaderBook& entry) {
+                if (!entry.book) return false;
+                std::string currentTitle = entry.book->getTitle();
+                std::transform(currentTitle.begin(), currentTitle.end(), currentTitle.begin(), ::tolower);
+                return currentTitle == target;
+            }),
+        profileBooks.end()
     );
 }
 

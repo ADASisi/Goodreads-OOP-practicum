@@ -8,5 +8,16 @@ enum class Genre
 	Mystery,
 	Horror,
 	Drama,
-	Adventure
+	Adventure,
+	ScienceFiction,
+	Biography,
+	History,
+	Poetry,
+	Children,
+	YoungAdult,
+	Classic,
+	NonFiction,
+	Comedy,
+	Crime,
+	Philosophy
 };

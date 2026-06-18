@@ -91,7 +91,7 @@ void SocialService::followUser(User* targetUser)
     Reader* targetReader = dynamic_cast<Reader*>(targetUser);
     if (targetReader)
     {
-        Message msg(currentReader->getUsername(), targetReader->getUsername(), "Started following you.", false);
+        Message msg(currentReader->getUsername(), targetReader->getUsername(), "Started following you.");
         targetReader->addMessageToInbox(msg);
     }
 
@@ -269,7 +269,7 @@ void SocialService::showInbox(const std::string& filter) const {
     }
 
     std::string lowerFilter = toLower(filter);
-    int index = 0;
+    int index = 1;
     bool displayedAny = false;
 
     for (const auto& msg : inbox) {
@@ -312,13 +312,14 @@ void SocialService::readMessage(int index) {
     if (!currentReader) return;
     auto& inbox = currentReader->getInbox();
 
-    if (index < 0 || index >= static_cast<int>(inbox.size())) {
+    if (index < 1 || index > static_cast<int>(inbox.size())) {
         throw BadRequestException("Error: Invalid message index.");
     }
 
-    inbox[index].markAsRead();
+    int position = index - 1;
+    inbox[position].markAsRead();
     std::cout << "Message [" << index << "] read.\n";
-    std::cout << inbox[index].getContent();
+    std::cout << inbox[position].getContent();
 }
 
 void SocialService::deleteMessage(int index) {
@@ -326,15 +327,16 @@ void SocialService::deleteMessage(int index) {
     if (!currentReader) return;
     auto& inbox = currentReader->getInbox();
 
-    if (index < 0 || index >= inbox.size()) {
+    if (index < 1 || index > static_cast<int>(inbox.size())) {
         throw BadRequestException("Error: Invalid message index.");
     }
 
-    if (!inbox[index].getIsRead()) {
+    int position = index - 1;
+    if (!inbox[position].getIsRead()) {
         throw ForbiddenException("Error: You can only delete messages that you have already read.");
     }
 
-    inbox.erase(inbox.begin() + index);
+    inbox.erase(inbox.begin() + position);
     std::cout << "Message [" << index << "] deleted successfully.\n";
 }
 
@@ -348,7 +350,7 @@ void SocialService::sendOffer(const std::string& authorUsername) {
     }
 
     std::string offerContent = "JOB_OFFER: Publisher " + currentPublisher->getUsername() + " wants to sign a contract with you.";
-    Message msg(currentPublisher->getUsername(), targetAuthor->getUsername(), offerContent, false);
+    Message msg(currentPublisher->getUsername(), targetAuthor->getUsername(), offerContent);
     targetAuthor->addMessageToInbox(msg);
 
     std::cout << "Offer successfully sent to " << authorUsername << ".\n";
@@ -359,11 +361,12 @@ void SocialService::acceptOffer(int index) {
     if (!currentAuthor) return;
 
     auto& inbox = currentAuthor->getInbox();
-    if (index < 0 || index >= static_cast<int>(inbox.size())) {
+    if (index < 1 || index > static_cast<int>(inbox.size())) {
         throw BadRequestException("Error: Invalid message index.");
     }
 
-    Message& msg = inbox[index];
+    int position = index - 1;
+    Message& msg = inbox[position];
     if (msg.getContent().find("JOB_OFFER:") != 0) {
         throw BadRequestException("Error: This message is not a job offer.");
     }
@@ -379,7 +382,7 @@ void SocialService::acceptOffer(int index) {
     currentAuthor->addPublisher(publisherName);
     publisher->addAuthor(currentAuthor->getUsername());
 
-    inbox.erase(inbox.begin() + index);
+    inbox.erase(inbox.begin() + position);
     std::cout << "Success! You are now partnered with publisher " << publisherName << ".\n";
 }
 
@@ -426,7 +429,7 @@ void SocialService::notifyNewBookPublished(Publisher* publisher, Author* author,
             }
             notification += ": " + bookTitle;
 
-            Message msg("System", reader->getUsername(), notification, false);
+            Message msg("System", reader->getUsername(), notification);
             reader->addMessageToInbox(msg);
         }
     }

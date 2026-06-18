@@ -39,14 +39,14 @@ inline bool parseMessageIndex(const std::string& value, int& index)
 	{
 		size_t parsed = 0;
 		index = std::stoi(value, &parsed);
-		if (parsed != value.size() || index < 0) {
-			fail("Error: Index must be a non-negative number.");
+		if (parsed != value.size() || index < 1) {
+			fail("Error: Index must be a positive number.");
 		}
 		return true;
 	}
 	catch (...) 
 	{
-		fail("Error: Index must be a non-negative number.");
+		fail("Error: Index must be a positive number.");
 		return false;
 	}
 }
