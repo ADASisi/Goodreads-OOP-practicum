@@ -1,13 +1,8 @@
 #pragma once
 #include "../service/AuthService.h"
 #include "../utils/HelperFunctions.h"
-#include <stdexcept>
+#include "../utils/ServiceExceptions.h"
 #include <iostream>
-
-inline void fail(const std::string& message)
-{
-	throw std::invalid_argument(message);
-}
 
 inline Reader* requireReader(AuthService& authService, const std::string& message)
 {
@@ -44,7 +39,9 @@ inline bool parseMessageIndex(const std::string& value, int& index)
 	{
 		size_t parsed = 0;
 		index = std::stoi(value, &parsed);
-		if (parsed != value.size() || index < 0) throw std::exception();
+		if (parsed != value.size() || index < 0) {
+			fail("Error: Index must be a non-negative number.");
+		}
 		return true;
 	}
 	catch (...) 

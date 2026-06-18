@@ -30,3 +30,8 @@ class BadRequestException : public ServiceException {
 public:
     BadRequestException(const std::string& msg) : ServiceException(msg) {}
 };
+
+inline void fail(const std::string& message)
+{
+    throw BadRequestException(message);
+}

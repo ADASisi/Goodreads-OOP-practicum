@@ -89,7 +89,7 @@ namespace {
     {
         try {
             size_t parsed = 0;
-            if (!value.empty() && value[0] == '-') throw std::exception();
+            if (!value.empty() && value[0] == '-') return false;
             pages = std::stoul(value, &parsed);
             return parsed == value.size() && pages > 0 && pages <= 10000;
         }

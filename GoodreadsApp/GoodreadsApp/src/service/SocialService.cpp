@@ -1,10 +1,10 @@
 #include <algorithm>
 #include <iostream> 
-#include <stdexcept>
 #include "../../include/modules/Reader.h"
 #include "../../include/service/AuthService.h"
 #include "../../include/service/SocialService.h"
 #include "../../include/utils/HelperFunctions.h"
+#include "../../include/utils/ServiceExceptions.h"
 
 SocialService::SocialService(AuthService& authService) : authService(authService) {}
 
@@ -23,7 +23,7 @@ Reader* SocialService::currentReaderOrError(const std::string& errorMessage) con
 {
     Reader* reader = dynamic_cast<Reader*>(authService.getCurrentUser());
     if (!reader) {
-        throw std::runtime_error(errorMessage);
+        throw UnauthorizedException(errorMessage);
     }
     return reader;
 }
@@ -32,7 +32,7 @@ Author* SocialService::currentAuthorOrError(const std::string& errorMessage) con
 {
     Author* author = dynamic_cast<Author*>(authService.getCurrentUser());
     if (!author) {
-        throw std::runtime_error(errorMessage);
+        throw UnauthorizedException(errorMessage);
     }
     return author;
 }
@@ -41,7 +41,7 @@ Publisher* SocialService::currentPublisherOrError(const std::string& errorMessag
 {
     Publisher* publisher = dynamic_cast<Publisher*>(authService.getCurrentUser());
     if (!publisher) {
-        throw std::runtime_error(errorMessage);
+        throw UnauthorizedException(errorMessage);
     }
     return publisher;
 }
@@ -71,17 +71,17 @@ void SocialService::followUser(User* targetUser)
 
     if (!targetUser)
     {
-        throw std::runtime_error("Error: User not found.");
+        throw NotFoundException("Error: User not found.");
     }
 
     if (toLower(targetUser->getUsername()) == toLower(currentReader->getUsername()))
     {
-        throw std::runtime_error("Error: You cannot follow yourself.");
+        throw BadRequestException("Error: You cannot follow yourself.");
     }
 
     if (currentReader->isFollowing(targetUser))
     {
-        throw std::runtime_error("Error: You are already following " + targetUser->getUsername() + ".");
+        throw BadRequestException("Error: You are already following " + targetUser->getUsername() + ".");
     }
 
     currentReader->addFollowing(targetUser);
@@ -108,12 +108,12 @@ void SocialService::showFriends(const std::string& targetUsername) const {
     else {
         User* targetUser = findUserInDB(targetUsername);
         if (!targetUser) {
-            throw std::runtime_error("Error: User '" + targetUsername + "' not found.");
+            throw NotFoundException("Error: User '" + targetUsername + "' not found.");
         }
 
         readerToView = findReaderInDB(targetUsername);
         if (!readerToView) {
-            throw std::runtime_error("Error: User '" + targetUsername + "' is not a reader.");
+            throw BadRequestException("Error: User '" + targetUsername + "' is not a reader.");
         }
     }
 
@@ -138,7 +138,7 @@ void SocialService::showFriends(const std::string& targetUsername) const {
 
 void SocialService::showFollowers(Author* author) const {
     if (!author) {
-        throw std::runtime_error("Error: Author is required to view followers.");
+        throw BadRequestException("Error: Author is required to view followers.");
     }
 
     std::cout << "Followers of " << author->getUsername() << ":\n";
@@ -178,10 +178,10 @@ void SocialService::addBirthday(const std::string& date)
 
     Date birthday;
     if (!parseDate(date, birthday)) {
-        throw std::runtime_error("Error: Invalid date. Use format dd.mm.yyyy, dd/mm/yyyy, or dd-mm-yyyy.");
+        throw BadRequestException("Error: Invalid date. Use format dd.mm.yyyy, dd/mm/yyyy, or dd-mm-yyyy.");
     }
     if (isFutureDate(birthday)) {
-        throw std::runtime_error("Error: Birthday cannot be in the future.");
+        throw BadRequestException("Error: Birthday cannot be in the future.");
     }
 
     currentReader->setBirthday(birthday);
@@ -202,13 +202,13 @@ void SocialService::showProfile(const std::string& reader) const
         User* targetUser = findUserInDB(reader);
         if (!targetUser) 
         {
-            throw std::runtime_error("Error: User '" + reader + "' not found.");
+            throw NotFoundException("Error: User '" + reader + "' not found.");
         }
 
         readerToView = findReaderInDB(reader);
         if (!readerToView) 
         {
-            throw std::runtime_error("Error: User '" + reader + "' is not a reader or author.");
+            throw BadRequestException("Error: User '" + reader + "' is not a reader or author.");
         }
     }
 
@@ -313,7 +313,7 @@ void SocialService::readMessage(int index) {
     auto& inbox = currentReader->getInbox();
 
     if (index < 0 || index >= static_cast<int>(inbox.size())) {
-        throw std::runtime_error("Error: Invalid message index.");
+        throw BadRequestException("Error: Invalid message index.");
     }
 
     inbox[index].markAsRead();
@@ -327,11 +327,11 @@ void SocialService::deleteMessage(int index) {
     auto& inbox = currentReader->getInbox();
 
     if (index < 0 || index >= inbox.size()) {
-        throw std::runtime_error("Error: Invalid message index.");
+        throw BadRequestException("Error: Invalid message index.");
     }
 
     if (!inbox[index].getIsRead()) {
-        throw std::runtime_error("Error: You can only delete messages that you have already read.");
+        throw ForbiddenException("Error: You can only delete messages that you have already read.");
     }
 
     inbox.erase(inbox.begin() + index);
@@ -344,7 +344,7 @@ void SocialService::sendOffer(const std::string& authorUsername) {
 
     Author* targetAuthor = findAuthorInDB(authorUsername);
     if (!targetAuthor) {
-        throw std::runtime_error("Error: '" + authorUsername + "' is not an author or does not exist.");
+        throw NotFoundException("Error: '" + authorUsername + "' is not an author or does not exist.");
     }
 
     std::string offerContent = "JOB_OFFER: Publisher " + currentPublisher->getUsername() + " wants to sign a contract with you.";
@@ -360,12 +360,12 @@ void SocialService::acceptOffer(int index) {
 
     auto& inbox = currentAuthor->getInbox();
     if (index < 0 || index >= static_cast<int>(inbox.size())) {
-        throw std::runtime_error("Error: Invalid message index.");
+        throw BadRequestException("Error: Invalid message index.");
     }
 
     Message& msg = inbox[index];
     if (msg.getContent().find("JOB_OFFER:") != 0) {
-        throw std::runtime_error("Error: This message is not a job offer.");
+        throw BadRequestException("Error: This message is not a job offer.");
     }
 
     std::string publisherName = msg.getSender();
@@ -373,7 +373,7 @@ void SocialService::acceptOffer(int index) {
     Publisher* publisher = findPublisherInDB(publisherName);
 
     if (!publisher) {
-        throw std::runtime_error("Error: The publisher who sent this offer no longer exists.");
+        throw NotFoundException("Error: The publisher who sent this offer no longer exists.");
     }
 
     currentAuthor->addPublisher(publisherName);
@@ -390,7 +390,7 @@ void SocialService::leavePublisher(const std::string& publisherUsername)
 
     Publisher* publisher = findPublisherInDB(publisherUsername);
     if (!publisher) {
-        throw std::runtime_error("Error: Publisher '" + publisherUsername + "' not found.");
+        throw NotFoundException("Error: Publisher '" + publisherUsername + "' not found.");
     }
     currentAuthor->removePublisher(publisherUsername);
     publisher->removeAuthor(currentAuthor->getUsername());

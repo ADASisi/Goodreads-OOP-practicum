@@ -26,7 +26,9 @@ void AddBook::execute(const std::vector<std::string>& args)
 		{
 			size_t parsed = 0;
 			rating = std::stoi(args[3], &parsed);
-			if (parsed != args[3].size() || rating < 0 || rating > 10) throw std::exception();
+			if (parsed != args[3].size() || rating < 0 || rating > 10) {
+				fail("Error: Rating must be from 0 to 10.");
+			}
 		}
 		catch (...) 
 		{ 

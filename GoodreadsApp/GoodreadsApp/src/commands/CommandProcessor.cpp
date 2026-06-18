@@ -26,8 +26,8 @@
 #include "../../include/commands/ShowInbox.h"
 #include "../../include/commands/ShowShelf.h"
 #include "../../include/utils/HelperFunctions.h"
+#include "../../include/utils/ServiceExceptions.h"
 #include <cstdlib>
-#include <exception>
 #include <iostream>
 #include <sstream>
 
@@ -86,7 +86,7 @@ void CommandProcessor::execute(const std::string& line)
 		}
 		it->second->execute(args);
 	}
-	catch (const std::exception& error) {
+	catch (const ServiceException& error) {
 		std::cout << error.what() << "\n";
 	}
 }
@@ -102,7 +102,7 @@ void CommandProcessor::run()
 				try {
 					fail("Error: Usage: exit");
 				}
-				catch (const std::exception& error) {
+				catch (const ServiceException& error) {
 					std::cout << error.what() << "\n";
 				}
 				continue;
