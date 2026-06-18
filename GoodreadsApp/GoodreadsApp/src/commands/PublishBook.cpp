@@ -32,6 +32,10 @@ void PublishBook::execute(const std::vector<std::string>& args)
 	{ 
 		fail("Error: Invalid release date.");
 	}
+	if (isFutureDate(date))
+	{
+		fail("Error: Release date cannot be in the future.");
+	}
 	unsigned int pages = 0;
 	if (!parsePositivePageCount(args[4], pages))
 	{

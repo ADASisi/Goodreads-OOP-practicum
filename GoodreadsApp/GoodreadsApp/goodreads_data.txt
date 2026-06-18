@@ -4,6 +4,8 @@ USER "engmont" "emnontI*1935" publisher
 USER "simeon" "simeonI*1939" reader
 BOOK "kom" "anatod" "engmont" "12.6.2040" 183 0 0 romance
 BOOK "som" "anatod" "engmont" "15.7.2020" 384 0 0 romance
+BIRTHDAY "aniantova" 18 9 2010
+BIRTHDAY "anatod" 3 5 2010
 AUTHOR_PUBLISHER "anatod" "engmont"
 FOLLOW "simeon" "anatod"
 MESSAGE "anatod" "simeon" 0 "Started following you."

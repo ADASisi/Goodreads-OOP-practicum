@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <cctype>
+#include <ctime>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -145,6 +146,35 @@ namespace {
         return std::to_string(date.getDay()) + "." +
             std::to_string(date.getMonth()) + "." +
             std::to_string(date.getYear());
+    }
+
+    Date getTodayDate()
+    {
+        std::time_t now = std::time(nullptr);
+        std::tm localTime{};
+        localtime_s(&localTime, &now);
+
+        return Date(
+            static_cast<unsigned int>(localTime.tm_mday),
+            static_cast<unsigned int>(localTime.tm_mon + 1),
+            static_cast<unsigned int>(localTime.tm_year + 1900)
+        );
+    }
+
+    bool isDateAfter(const Date& left, const Date& right)
+    {
+        if (left.getYear() != right.getYear()) {
+            return left.getYear() > right.getYear();
+        }
+        if (left.getMonth() != right.getMonth()) {
+            return left.getMonth() > right.getMonth();
+        }
+        return left.getDay() > right.getDay();
+    }
+
+    bool isFutureDate(const Date& date)
+    {
+        return isDateAfter(date, getTodayDate());
     }
 
     std::string toLower(std::string str)

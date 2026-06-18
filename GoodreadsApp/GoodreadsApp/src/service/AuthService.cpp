@@ -1,21 +1,5 @@
 #include "../../include/utils/HelperFunctions.h"
 #include "../../include/service/AuthService.h"
-#include <ctime>
-
-namespace {
-	Date today()
-	{
-		std::time_t now = std::time(nullptr);
-		std::tm localTime{};
-		localtime_s(&localTime, &now);
-
-		return Date(
-			static_cast<unsigned int>(localTime.tm_mday),
-			static_cast<unsigned int>(localTime.tm_mon + 1),
-			static_cast<unsigned int>(localTime.tm_year + 1900)
-		);
-	}
-}
 
 AuthService::AuthService(std::vector<std::unique_ptr<User>>& usersDB)
 	:usersDB(usersDB), currentUser(nullptr) {
@@ -28,7 +12,7 @@ bool AuthService::registerUser(const std::string& username, const std::string& p
 		});
 	if (it != usersDB.end()) return false;
 
-	Date registerDate = today();
+	Date registerDate = getTodayDate();
 
 	std::unique_ptr<User> tempUser = nullptr;
 

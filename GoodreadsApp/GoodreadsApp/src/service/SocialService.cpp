@@ -180,6 +180,9 @@ void SocialService::addBirthday(const std::string& date)
     if (!parseDate(date, birthday)) {
         throw std::runtime_error("Error: Invalid date. Use format dd.mm.yyyy, dd/mm/yyyy, or dd-mm-yyyy.");
     }
+    if (isFutureDate(birthday)) {
+        throw std::runtime_error("Error: Birthday cannot be in the future.");
+    }
 
     currentReader->setBirthday(birthday);
     std::cout << "Birthday updated to " << formatDate(birthday) << ".\n";
