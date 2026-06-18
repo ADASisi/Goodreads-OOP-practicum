@@ -26,11 +26,8 @@ public:
     void setBirthday(const Date& birthday);
     void clearBirthday();
 
-    bool isFollowing(User* u);
-
     std::vector<Message>& getInbox();
     void addMessageToInbox(const Message& msg);
-    bool isFollowing(User* u) const;
 
     void addBookToProfile(std::shared_ptr<Book> book);
 

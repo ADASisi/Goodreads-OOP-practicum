@@ -57,7 +57,7 @@ void User::removeFollowing(User* user)
 	followers.erase(std::remove(followers.begin(), followers.end(), user), followers.end());
 }
 
-bool User::isFollowing(User* user)
+bool User::isFollowing(User* user) const
 {
 	if (!user) return false;
 	for (const auto& u : following)

@@ -43,11 +43,6 @@ void Reader::clearBirthday()
     birthday.reset();
 }
 
-bool Reader::isFollowing(User* u)
-{
-    return User::isFollowing(u);
-}
-
 std::vector<Message>& Reader::getInbox()
 {
     return inbox;
@@ -56,11 +51,6 @@ std::vector<Message>& Reader::getInbox()
 void Reader::addMessageToInbox(const Message& msg)
 {
     inbox.push_back(msg);
-}
-
-bool Reader::isFollowing(User* u) const
-{
-    return const_cast<Reader*>(this)->User::isFollowing(u);
 }
 
 void Reader::addBookToProfile(std::shared_ptr<Book> book)

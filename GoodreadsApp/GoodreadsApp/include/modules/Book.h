@@ -13,7 +13,9 @@ public:
 	std::string getTitle() const;
 	std::string getAuthor() const;
 	std::string getPublishingHouse() const;
-	unsigned int getYear() const;
+	std::string getReleaseDate() const;
+	std::string getSynopsis() const;
+	std::string getGenres() const;
 	unsigned int getCountRatings() const;
 	double getSumRatings() const;
 	void setSynopsis(const std::string& synopsis);

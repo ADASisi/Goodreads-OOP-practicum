@@ -24,7 +24,7 @@ public:
 	void addFollower(User* user);
 
 	void removeFollowing(User* user);
-	bool isFollowing(User* user);
+	bool isFollowing(User* user) const;
 	void addFollowing(User* user);
 
 	void setUsername(const std::string& newUsername);

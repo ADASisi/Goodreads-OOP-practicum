@@ -3,15 +3,17 @@
 #include "Book.h"
 #include "Message.h"
 
-class Author : public Reader
+class Author
+	: public Reader
 {
 public:
 	Author(std::string username, std::string password, Date registerDate) : Reader(username, password, registerDate) {};
 	TypeUsers getType() const override;
 
 	std::unique_ptr<User> clone() const override;
-	void addPublisher(std::string publisherName);
+	void addPublisher(std::string publisherName, bool showMessage = true);
 	void removePublisher(const std::string& publisherName);
+	bool worksWithPublisher(const std::string& publisherName) const;
 
 	std::vector<std::string> getPublishers() const { return publishers; }
 

@@ -1,4 +1,5 @@
 #include "../../include/modules/Book.h"
+#include "../../include/utils/HelperFunctions.h"
 
 Book::Book(const std::string& title, const std::string& author, Date releaseDate, unsigned int pageCount, std::vector<Genre> genres)
     : title(title), author(author), releaseDate(releaseDate), pageCount(pageCount), genres(genres)
@@ -20,14 +21,29 @@ std::string Book::getPublishingHouse() const
     return publishingHouse;
 }
 
+std::string Book::getReleaseDate() const
+{
+    return formatDate(releaseDate);
+}
+
+std::string Book::getSynopsis() const
+{
+    return synopsis;
+}
+
+std::string Book::getGenres() const
+{
+    std::string result;
+    for (size_t i = 0; i < genres.size(); i++) {
+        if (i > 0) result += " ";
+        result += genreToString(genres[i]);
+    }
+    return result;
+}
+
 unsigned int Book::getCountRatings() const
 {
     return countRatings;
-}
-
-unsigned int Book::getYear() const
-{
-    return releaseDate.getYear();
 }
 
 double Book::getSumRatings() const

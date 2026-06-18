@@ -5,11 +5,96 @@
 #include <sstream>
 #include <vector>
 #include "../../include/modules/Date.h"
+#include "../../include/utils/Genre.h"
+#include "../../include/utils/TypeUsers.h"
 
 namespace {
     bool isBlank(const std::string& value)
     {
         return value.find_first_not_of(" \t\n\r") == std::string::npos;
+    }
+
+    bool isValidUsername(const std::string& username)
+    {
+        return username.length() >= 6 && username.length() <= 24 && !isBlank(username);
+    }
+
+    bool isValidPassword(const std::string& password)
+    {
+        bool hasLowercase = false;
+        bool hasUppercase = false;
+        bool hasNonLetter = false;
+
+        for (unsigned char ch : password) {
+            if (std::islower(ch)) {
+                hasLowercase = true;
+            }
+            else if (std::isupper(ch)) {
+                hasUppercase = true;
+            }
+            else if (!std::isalpha(ch)) {
+                hasNonLetter = true;
+            }
+        }
+
+        return password.length() >= 12 && password.length() <= 36 &&
+            hasLowercase && hasUppercase && hasNonLetter;
+    }
+
+    std::string getPasswordValidationError(const std::string& password)
+    {
+        if (password.length() < 12) {
+            return "Error: Password must be at least 12 characters long.";
+        }
+        if (password.length() > 36) {
+            return "Error: Password must be at most 36 characters long.";
+        }
+
+        bool hasLowercase = false;
+        bool hasUppercase = false;
+        bool hasNonLetter = false;
+
+        for (unsigned char ch : password) {
+            if (std::islower(ch)) {
+                hasLowercase = true;
+            }
+            else if (std::isupper(ch)) {
+                hasUppercase = true;
+            }
+            else if (!std::isalpha(ch)) {
+                hasNonLetter = true;
+            }
+        }
+
+        if (!hasLowercase) {
+            return "Error: Password must contain at least one lowercase letter.";
+        }
+        if (!hasUppercase) {
+            return "Error: Password must contain at least one uppercase letter.";
+        }
+        if (!hasNonLetter) {
+            return "Error: Password must contain at least one non-letter character.";
+        }
+
+        return "";
+    }
+
+    bool isValidBookTitle(const std::string& title)
+    {
+        return !isBlank(title) && title.length() <= 100;
+    }
+
+    bool parsePositivePageCount(const std::string& value, unsigned int& pages)
+    {
+        try {
+            size_t parsed = 0;
+            if (!value.empty() && value[0] == '-') throw std::exception();
+            pages = std::stoul(value, &parsed);
+            return parsed == value.size() && pages > 0 && pages <= 10000;
+        }
+        catch (...) {
+            return false;
+        }
     }
 
     bool isLeapYear(unsigned int year)
@@ -70,14 +155,14 @@ namespace {
 
     int getLevenshteinDistance(const std::string& s1, const std::string& s2)
     {
-        int m = s1.length(), n = s2.length();
+        size_t m = s1.length(), n = s2.length();
         std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1));
-        for (int i = 0; i <= m; i++) dp[i][0] = i;
-        for (int j = 0; j <= n; j++) dp[0][j] = j;
+        for (size_t i = 0; i <= m; i++) dp[i][0] = static_cast<int>(i);
+        for (size_t j = 0; j <= n; j++) dp[0][j] = static_cast<int>(j);
 
-        for (int i = 1; i <= m; i++)
+        for (size_t i = 1; i <= m; i++)
         {
-            for (int j = 1; j <= n; j++)
+            for (size_t j = 1; j <= n; j++)
             {
                 if (s1[i - 1] == s2[j - 1]) dp[i][j] = dp[i - 1][j - 1];
                 else dp[i][j] = 1 + std::min({ dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1] });
@@ -85,4 +170,62 @@ namespace {
         }
         return dp[m][n];
     }
+
+    static bool parseGenre(const std::string& value, Genre& genre)
+    {
+        std::string name = toLower(value);
+        if (name == "romance") genre = Genre::Romance;
+        else if (name == "fantasy") genre = Genre::Fantasy;
+        else if (name == "fiction") genre = Genre::Fiction;
+        else if (name == "thriller") genre = Genre::Thriller;
+        else if (name == "mystery") genre = Genre::Mystery;
+        else if (name == "horror") genre = Genre::Horror;
+        else if (name == "drama") genre = Genre::Drama;
+        else if (name == "adventure") genre = Genre::Adventure;
+        else return false;
+        return true;
+    }
+
+    std::string genreToString(Genre genre)
+    {
+        switch (genre) {
+        case Genre::Romance: return "romance";
+        case Genre::Fantasy: return "fantasy";
+        case Genre::Fiction: return "fiction";
+        case Genre::Thriller: return "thriller";
+        case Genre::Mystery: return "mystery";
+        case Genre::Horror: return "horror";
+        case Genre::Drama: return "drama";
+        case Genre::Adventure: return "adventure";
+        }
+        return "none";
+    }
+
+    std::string userTypeToString(TypeUsers type)
+    {
+        switch (type) {
+        case TypeUsers::Reader: return "reader";
+        case TypeUsers::Author: return "author";
+        case TypeUsers::Publisher: return "publisher";
+        }
+        return "reader";
+    }
+
+    bool parseUserType(const std::string& text, TypeUsers& type)
+    {
+        if (text == "reader") {
+            type = TypeUsers::Reader;
+            return true;
+        }
+        if (text == "author") {
+            type = TypeUsers::Author;
+            return true;
+        }
+        if (text == "publisher") {
+            type = TypeUsers::Publisher;
+            return true;
+        }
+        return false;
+	}
+
 }

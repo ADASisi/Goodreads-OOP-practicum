@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <stdexcept>
 
 BookService::BookService(std::vector<std::shared_ptr<Book>>& books) : booksDB(books) {}
 
@@ -64,16 +65,14 @@ void BookService::addBookToProfile(Reader* currentReader, const std::string& boo
 
     if (!book)
     {
-        std::cout << "Error: Book not found in global database.\n";
-        return;
+        throw std::runtime_error("Error: Book not found in global database.");
     }
 
     for (const auto& b : currentReader->getMyBooks())
     {
         if (toLower(b->getTitle()) == toLower(bookName)) 
         {
-            std::cout << "Book is already in your profile.\n";
-            return;
+            throw std::runtime_error("Error: Book is already in your profile.");
         }
     }
     currentReader->addBookToProfile(book);
@@ -89,8 +88,7 @@ void BookService::createShelf(Reader* currentReader, const std::string& shelfNam
 {
     if (currentReader->hasShelf(shelfName))
     {
-        std::cout << "Shelf '" << shelfName << "' already exists!\n";
-        return;
+        throw std::runtime_error("Error: Shelf '" + shelfName + "' already exists.");
     }
     currentReader->addShelf(std::make_shared<Shelf>(shelfName));
     std::cout << "Shelf '" << shelfName << "' created successfully.\n";
@@ -100,8 +98,7 @@ void BookService::deleteShelf(Reader* currentReader, const std::string& shelfNam
 {
     if (!currentReader->hasShelf(shelfName))
     {
-        std::cout << "Error: Shelf '" << shelfName << "' does not exist.\n";
-        return;
+        throw std::runtime_error("Error: Shelf '" + shelfName + "' does not exist.");
     }
 
     currentReader->removeShelf(shelfName);
@@ -114,23 +111,20 @@ void BookService::addBookToShelf(Reader* currentReader, const std::string& title
     Shelf* shelf = currentReader->findShelf(shelfName);
     if (!shelf)
     {
-        std::cout << "Error: Shelf '" << shelfName << "' not found.\n";
-        return;
+        throw std::runtime_error("Error: Shelf '" + shelfName + "' not found.");
     }
 
     std::shared_ptr<Book> book = findBookInDB(title);
     if (!book)
     {
-        std::cout << "Error: Book '" << title << "' not found.\n";
-        return;
+        throw std::runtime_error("Error: Book '" + title + "' not found.");
     }
 
     for (const auto& b : shelf->getBooks())
     {
         if (toLower(b->getTitle()) == toLower(title))
         {
-            std::cout << "Book is already on this shelf.\n";
-            return;
+            throw std::runtime_error("Error: Book is already on this shelf.");
         }
     }
 
@@ -143,8 +137,7 @@ void BookService::removeBookFromShelf(Reader* currentReader, const std::string& 
     Shelf* shelf = currentReader->findShelf(shelfName);
     if (!shelf)
     {
-        std::cout << "Error: Shelf '" << shelfName << "' not found.\n";
-        return;
+        throw std::runtime_error("Error: Shelf '" + shelfName + "' not found.");
     }
 
     shelf->removeBook(title);
@@ -169,15 +162,13 @@ void BookService::showShelf(Reader* currentReader, Reader* targetReader, const s
 
     if (!readerToSearch)
     {
-        std::cout << "Error: No reader specified.\n";
-        return;
+        throw std::runtime_error("Error: No reader specified.");
     }
 
     Shelf* shelf = readerToSearch->findShelf(shelfName);
     if (!shelf)
     {
-        std::cout << "Error: Shelf '" << shelfName << "' not found.\n";
-        return;
+        throw std::runtime_error("Error: Shelf '" + shelfName + "' not found.");
     }
 
     std::cout << "========================================\n";
@@ -206,14 +197,12 @@ void BookService::publishBook(Publisher* publisher, const std::string& title, co
 {
     if (!publisher)
     {
-        std::cout << "Error: Publisher is required.\n";
-        return;
+        throw std::runtime_error("Error: Publisher is required.");
     }
 
     if (findBookInDB(title) != nullptr)
     {
-        std::cout << "Error: A book with title '" << title << "' already exists in the system.\n";
-        return;
+        throw std::runtime_error("Error: A book with title '" + title + "' already exists in the system.");
     }
 
     auto newBook = std::make_shared<Book>(title, author, releaseDate, pages, genres);
@@ -227,21 +216,18 @@ void BookService::addSynopsis(Publisher* publisher, const std::string& title, co
 {
     if (!publisher)
     {
-        std::cout << "Error: Publisher is required.\n";
-        return;
+        throw std::runtime_error("Error: Publisher is required.");
     }
 
     std::shared_ptr<Book> book = findBookInDB(title);
     if (!book)
     {
-        std::cout << "Error: Book '" << title << "' not found.\n";
-        return;
+        throw std::runtime_error("Error: Book '" + title + "' not found.");
     }
 
     if (toLower(book->getPublishingHouse()) != toLower(publisher->getUsername()))
     {
-        std::cout << "Error: Only the publisher who published this book can add a synopsis.\n";
-        return;
+        throw std::runtime_error("Error: Only the publisher who published this book can add a synopsis.");
     }
 
     book->setSynopsis(synopsis);
