@@ -1,6 +1,8 @@
 #include "../../include/commands/DeleteBook.h"
 #include "../../include/commands/CommandUtils.h"
 
+using namespace Helper;
+
 DeleteBook::DeleteBook(AuthService& a, BookService& b) : authService(a), bookService(b) {}
 
 void DeleteBook::execute(const std::vector<std::string>& args) 

@@ -2,6 +2,8 @@
 #include "../../include/commands/CommandUtils.h"
 #include <iostream>
 
+using namespace Helper;
+
 Register::Register(AuthService& authService) : authService(authService) {}
 
 void Register::execute(const std::vector<std::string>& args)

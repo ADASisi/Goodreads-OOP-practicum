@@ -1,6 +1,8 @@
 #include "../../include/commands/AddToShelf.h"
 #include "../../include/commands/CommandUtils.h"
 
+using namespace Helper;
+
 AddToShelf::AddToShelf(AuthService& a, BookService& b) : authService(a), bookService(b) {}
 
 void AddToShelf::execute(const std::vector<std::string>& args) 

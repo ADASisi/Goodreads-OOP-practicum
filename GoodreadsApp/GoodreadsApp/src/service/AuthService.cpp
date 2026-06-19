@@ -1,5 +1,8 @@
 #include "../../include/utils/HelperFunctions.h"
 #include "../../include/service/AuthService.h"
+#include <algorithm>
+
+using namespace Helper;
 
 AuthService::AuthService(std::vector<std::unique_ptr<User>>& usersDB)
 	:usersDB(usersDB), currentUser(nullptr) {

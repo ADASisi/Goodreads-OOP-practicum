@@ -6,6 +6,8 @@
 #include "../../include/utils/HelperFunctions.h"
 #include "../../include/utils/ServiceExceptions.h"
 
+using namespace Helper;
+
 SocialService::SocialService(AuthService& authService) : authService(authService) {}
 
 

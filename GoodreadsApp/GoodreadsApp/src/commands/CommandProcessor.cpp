@@ -31,6 +31,8 @@
 #include <iostream>
 #include <sstream>
 
+using namespace Helper;
+
 static std::vector<std::string> tokenizeCommand(const std::string& line)
 {
 	std::istringstream stream(line);

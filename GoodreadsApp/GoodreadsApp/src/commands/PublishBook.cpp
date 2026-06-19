@@ -2,6 +2,8 @@
 #include "../../include/commands/CommandUtils.h"
 #include "../../include/utils/HelperFunctions.h"
 
+using namespace Helper;
+
 PublishBook::PublishBook(AuthService& a, BookService& b, SocialService& s)
 	: authService(a), bookService(b), socialService(s) {}
 

@@ -28,7 +28,7 @@ inline Publisher* requirePublisher(AuthService& authService, const std::string& 
 inline User* findUser(AuthService& authService, const std::string& username)
 {
 	for (const auto& user : authService.getUsersDB()) {
-		if (toLower(user->getUsername()) == toLower(username)) return user.get();
+		if (Helper::toLower(user->getUsername()) == Helper::toLower(username)) return user.get();
 	}
 	return nullptr;
 }

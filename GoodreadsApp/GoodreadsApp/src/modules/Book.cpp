@@ -1,6 +1,8 @@
 #include "../../include/modules/Book.h"
 #include "../../include/utils/HelperFunctions.h"
 
+using namespace Helper;
+
 Book::Book(const std::string& title, const std::string& author, Date releaseDate, unsigned int pageCount, std::vector<Genre> genres)
     : title(title), author(author), releaseDate(releaseDate), pageCount(pageCount), genres(genres)
 {

@@ -1,6 +1,8 @@
 #include "../../include/commands/RemoveFromShelf.h"
 #include "../../include/commands/CommandUtils.h"
 
+using namespace Helper;
+
 RemoveFromShelf::RemoveFromShelf(AuthService& a, BookService& b) : authService(a), bookService(b) {}
 
 void RemoveFromShelf::execute(const std::vector<std::string>& args) 

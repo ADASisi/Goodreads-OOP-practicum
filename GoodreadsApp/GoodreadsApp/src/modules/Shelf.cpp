@@ -2,6 +2,8 @@
 #include "../../include/utils/HelperFunctions.h"
 #include <algorithm>
 
+using namespace Helper;
+
 Shelf::Shelf(const std::string& shelfName) : name(shelfName), createDate(getTodayDate()) {}
 
 Shelf::Shelf(const std::string& shelfName, Date createDate) : name(shelfName), createDate(createDate) {}

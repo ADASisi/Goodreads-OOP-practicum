@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <cmath>
 
+using namespace Helper;
+
 BookService::BookService(std::vector<std::shared_ptr<Book>>& books) : booksDB(books) {}
 
 std::shared_ptr<Book> BookService::findBookInDB(const std::string& title) const

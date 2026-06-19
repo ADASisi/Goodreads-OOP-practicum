@@ -1,6 +1,8 @@
 #include "../../include/commands/AddSynopsis.h"
 #include "../../include/commands/CommandUtils.h"
 
+using namespace Helper;
+
 AddSynopsis::AddSynopsis(AuthService& a, BookService& b) : authService(a), bookService(b) {}
 
 void AddSynopsis::execute(const std::vector<std::string>& args)

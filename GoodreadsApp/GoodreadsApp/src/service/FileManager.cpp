@@ -8,6 +8,8 @@
 #include <sstream>
 #include <vector>
 
+using namespace Helper;
+
 namespace {
     User* findUser(AuthService& auth, const std::string& username)
     {

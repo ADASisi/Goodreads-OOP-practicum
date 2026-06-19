@@ -1,6 +1,8 @@
 #include "../../include/commands/AddBook.h"
 #include "../../include/commands/CommandUtils.h"
 
+using namespace Helper;
+
 AddBook::AddBook(AuthService& authService, BookService& bookService)
 	: authService(authService), bookService(bookService) {}
 
