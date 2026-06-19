@@ -55,6 +55,6 @@ void PublishBook::execute(const std::vector<std::string>& args)
 	if (bookService.findBookInDB(args[1])) {
 		fail("Error: A book with title '" + args[1] + "' already exists in the system.");
 	}
-	bookService.publishBook(publisher, args[1], args[2], date, pages, genres);
+	bookService.publishBook(publisher, author, args[1], date, pages, genres);
 	socialService.notifyNewBookPublished(publisher, author, args[1]);
 }

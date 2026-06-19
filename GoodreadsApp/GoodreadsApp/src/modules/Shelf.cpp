@@ -1,19 +1,35 @@
 #include "../../include/modules/Shelf.h"
+#include "../../include/utils/HelperFunctions.h"
 #include <algorithm>
 
-Shelf::Shelf(const std::string& shelfName) : name(shelfName) {}
+Shelf::Shelf(const std::string& shelfName) : name(shelfName), createDate(getTodayDate()) {}
+
+Shelf::Shelf(const std::string& shelfName, Date createDate) : name(shelfName), createDate(createDate) {}
+
 std::string Shelf::getName() const
 {
     return name;
 }
+
 const std::vector<std::shared_ptr<Book>>& Shelf::getBooks() const
 {
     return containBooks;
 }
 
+size_t Shelf::getBookCount() const
+{
+    return countBooks;
+}
+
+Date Shelf::getCreateDate() const
+{
+    return createDate;
+}
+
 void Shelf::addBook(std::shared_ptr<Book> book)
 {
     containBooks.push_back(book);
+    countBooks = containBooks.size();
 }
 
 void Shelf::removeBook(const std::string& bookTitle) {
@@ -30,4 +46,5 @@ void Shelf::removeBook(const std::string& bookTitle) {
             }),
         containBooks.end()
     );
+    countBooks = containBooks.size();
 }

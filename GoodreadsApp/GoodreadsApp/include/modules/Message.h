@@ -4,14 +4,14 @@
 
 class Message {
 public:
-	Message(const std::string sender, const std::string receiver, const std::string content);
+	Message(const std::string& sender, const std::string& receiver, const std::string content);
 
 	static Message restoreFromFile(const std::string& sender, const std::string& receiver, const std::string& content, bool isRead);
 
 	bool getIsRead() const;
 
-	std::string getSender() const;
-	std::string getContent() const;
+	const std::string getSender() const;
+	const std::string getContent() const;
 
 	void markAsRead();
 

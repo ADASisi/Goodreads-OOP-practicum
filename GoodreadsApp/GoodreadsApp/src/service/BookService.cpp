@@ -70,7 +70,7 @@ void BookService::addBookToProfile(Reader* currentReader, const std::string& boo
 
     for (const auto& b : currentReader->getMyBooks())
     {
-        if (toLower(b->getTitle()) == toLower(bookName)) 
+        if (toLower(b->getTitle()) == toLower(bookName))
         {
             throw BadRequestException("Error: Book is already in your profile.");
         }
@@ -200,11 +200,15 @@ void BookService::showShelf(Reader* currentReader, Reader* targetReader, const s
     }
 }
 
-void BookService::publishBook(Publisher* publisher, const std::string& title, const std::string& author, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres)
+void BookService::publishBook(Publisher* publisher, Author* author, const std::string& title, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres)
 {
     if (!publisher)
     {
         throw BadRequestException("Error: Publisher is required.");
+    }
+    if (!author)
+    {
+        throw BadRequestException("Error: Author is required.");
     }
 
     if (findBookInDB(title) != nullptr)
@@ -212,11 +216,13 @@ void BookService::publishBook(Publisher* publisher, const std::string& title, co
         throw BadRequestException("Error: A book with title '" + title + "' already exists in the system.");
     }
 
-    auto newBook = std::make_shared<Book>(title, author, releaseDate, pages, genres);
+    auto newBook = std::make_shared<Book>(title, author->getUsername(), releaseDate, pages, genres);
+    
     newBook->setPublishingHouse(publisher->getUsername());
     booksDB.push_back(newBook);
+    author->addPublishedBook(newBook);
 
-    std::cout << "Successfully published the book '" << title << "' by " << author << "!\n";
+    std::cout << "Successfully published the book '" << title << "' by " << author->getUsername() << "!\n";
 }
 
 void BookService::addSynopsis(Publisher* publisher, const std::string& title, const std::string& synopsis)

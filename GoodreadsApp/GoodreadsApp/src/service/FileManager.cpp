@@ -74,6 +74,7 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
     struct ShelfRecord {
         std::string username;
         std::string shelf;
+        Date createDate = getTodayDate();
     };
     struct ShelfBookRecord {
         std::string username;
@@ -184,6 +185,10 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
                 }
             }
             books.getBooksDB().push_back(book);
+            Author* bookAuthor = dynamic_cast<Author*>(findUser(auth, author));
+            if (bookAuthor) {
+                bookAuthor->addPublishedBook(book);
+            }
         }
         else if (recordType == "FOLLOW") {
             FollowRecord record;
@@ -238,6 +243,11 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
                 std::cout << "Error: Invalid SHELF record in database.\n";
                 return false;
             }
+            std::string dateText;
+            if (input >> std::quoted(dateText) && !parseDate(dateText, record.createDate)) {
+                std::cout << "Error: Invalid SHELF date in database.\n";
+                return false;
+            }
             shelves.push_back(record);
         }
         else if (recordType == "SHELF_BOOK") {
@@ -276,7 +286,7 @@ bool FileManager::loadData(AuthService& auth, BookService& books, SocialService&
     for (const auto& record : shelves) {
         Reader* reader = dynamic_cast<Reader*>(findUser(auth, record.username));
         if (reader && !reader->hasShelf(record.shelf)) {
-            reader->addShelf(std::make_shared<Shelf>(record.shelf));
+            reader->addShelf(std::make_shared<Shelf>(record.shelf, record.createDate));
         }
     }
 
@@ -370,7 +380,8 @@ bool FileManager::saveData(const AuthService& auth, const BookService& books, co
             if (!shelf) continue;
             file << "SHELF "
                 << std::quoted(reader->getUsername()) << " "
-                << std::quoted(shelf->getName()) << "\n";
+                << std::quoted(shelf->getName()) << " "
+                << std::quoted(formatDate(shelf->getCreateDate())) << "\n";
 
             for (const auto& book : shelf->getBooks()) {
                 if (book) {

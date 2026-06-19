@@ -52,11 +52,6 @@ void User::addFollower(User* user)
 	followers.push_back(user);
 }
 
-void User::removeFollowing(User* user)
-{
-	followers.erase(std::remove(followers.begin(), followers.end(), user), followers.end());
-}
-
 bool User::isFollowing(User* user) const
 {
 	if (!user) return false;

@@ -6,6 +6,7 @@
 #include "../modules/Book.h"
 #include "../modules/Reader.h"
 #include "../modules/Publisher.h"
+#include "../modules/Author.h"
 
 class BookService {
 private:
@@ -16,7 +17,7 @@ public:
 
 	void searchBooks(const std::string& query) const;
 	void addBookToProfile(Reader* currentReader, const std::string& bookName, Status status = Status::PlanToRead, double rating = -1);
-	void publishBook(Publisher* publisher, const std::string& title, const std::string& author, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres);
+	void publishBook(Publisher* publisher, Author* author, const std::string& title, Date releaseDate, unsigned int pages, const std::vector<Genre>& genres);
 	void addSynopsis(Publisher* publisher, const std::string& title, const std::string& synopsis);
 
 	void deleteBookFromProfile(Reader* currentReader, const std::string& bookName);

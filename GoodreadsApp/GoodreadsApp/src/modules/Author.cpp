@@ -33,3 +33,14 @@ bool Author::worksWithPublisher(const std::string& publisherName) const
 {
 	return std::find(publishers.begin(), publishers.end(), publisherName) != publishers.end();
 }
+
+void Author::addPublishedBook(std::shared_ptr<Book> book)
+{
+	if (!book) return;
+	for (const auto& publishedBook : publishedBooks) {
+		if (publishedBook && publishedBook->getTitle() == book->getTitle()) {
+			return;
+		}
+	}
+	publishedBooks.push_back(book);
+}

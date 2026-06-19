@@ -1,6 +1,6 @@
 #include "../../include/modules/Message.h"
 
-Message::Message(const std::string sender, const std::string receiver, const std::string content)
+Message::Message(const std::string& sender, const std::string& receiver, const std::string content)
 	: sender(sender), receiver(receiver), content(content), isRead(false)
 {
 }
@@ -18,11 +18,11 @@ bool Message::getIsRead() const
 {
 	return isRead;
 }
-std::string Message::getSender() const
+const std::string Message::getSender() const
 {
 	return sender;
 }
-std::string Message::getContent() const
+const std::string Message::getContent() const
 {
 	return content;
 }

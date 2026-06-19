@@ -2,14 +2,15 @@
 #include "Command.h"
 #include "../service/AuthService.h"
 #include "../service/BookService.h"
+#include "../service/SocialService.h"
 
 class Search : public Command
 {
 private:
-	AuthService& authService;
 	BookService& bookService;
+	SocialService& socialService;
 
 public:
-	Search(AuthService& authService, BookService& bookService);
+	Search(BookService& bookService, SocialService& socialService);
 	void execute(const std::vector<std::string>& args) override;
 };

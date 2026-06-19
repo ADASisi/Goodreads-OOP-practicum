@@ -233,20 +233,21 @@ void SocialService::showProfile(const std::string& reader) const
     {
         for (const auto& shelf : readerToView->getShelves()) 
         {
-            std::cout << "- " << shelf->getName() << " (" << shelf->getBooks().size() << " books)\n";
+            std::cout << "- " << shelf->getName() << " (" << shelf->getBookCount()
+                << " books, created " << formatDate(shelf->getCreateDate()) << ")\n";
         }
     }
 
     std::cout << "Favorite books:\n";
-    if (readerToView->getFavoriteBooks().empty()) 
+    if (readerToView->getFavoriteBooks().empty())
     {
         std::cout << "- (No favorite books)\n";
     }
-    else 
+    else
     {
-        for (const auto& book : readerToView->getFavoriteBooks()) 
+        for (const auto& book : readerToView->getFavoriteBooks())
         {
-            if (book) 
+            if (book)
             {
                 std::cout << "- " << book->getTitle() << " by " << book->getAuthor() << "\n";
             }
@@ -438,10 +439,25 @@ void SocialService::notifyNewBookPublished(Publisher* publisher, Author* author,
 void SocialService::searchUser(const std::string& query) 
 {
     std::cout << "Users:\n";
-	User* user = findUserInDB(query);
-    
-    user ? std::cout << "- " << user->getUsername() << " (" << (user->getType() == TypeUsers::Reader ? "Reader" : user->getType() == TypeUsers::Author ? "Author" : "Publisher") << ")\n"
-		: std::cout << "(No users match the search criteria)\n";
+    std::string lowerQuery = toLower(query);
+    bool found = false;
+
+    for (const auto& user : authService.getUsersDB())
+    {
+        std::string name = toLower(user->getUsername());
+        if (name.find(lowerQuery) != std::string::npos || getLevenshteinDistance(lowerQuery, name) <= 2)
+        {
+            const char* type = user->getType() == TypeUsers::Reader ? "Reader" :
+                user->getType() == TypeUsers::Author ? "Author" : "Publisher";
+            std::cout << user->getUsername() << " (" << type << ")\n";
+            found = true;
+        }
+    }
+
+    if (!found)
+    {
+        std::cout << "(No users match the search criteria)\n";
+    }
 }
 
 

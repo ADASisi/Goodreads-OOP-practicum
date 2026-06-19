@@ -14,8 +14,10 @@ public:
 	void addPublisher(std::string publisherName, bool showMessage = true);
 	void removePublisher(const std::string& publisherName);
 	bool worksWithPublisher(const std::string& publisherName) const;
+	void addPublishedBook(std::shared_ptr<Book> book);
 
 	std::vector<std::string> getPublishers() const { return publishers; }
+	const std::vector<std::shared_ptr<Book>>& getPublishedBooks() const { return publishedBooks; }
 
 private:
 	std::vector<std::shared_ptr<Book>> publishedBooks;

@@ -1,5 +1,4 @@
 #include "../../include/modules/Date.h"
-#include "../../include/modules/Book.h"
 
 Date::Date() : day(1), month(1), year(2000)
 {

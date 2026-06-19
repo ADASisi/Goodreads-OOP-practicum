@@ -46,7 +46,7 @@ CommandProcessor::CommandProcessor(AuthService& auth, BookService& books, Social
 	add("register", std::make_unique<Register>(auth));
 	add("login", std::make_unique<Login>(auth));
 	add("logout", std::make_unique<LogOut>(auth));
-	add("search", std::make_unique<Search>(auth, books));
+	add("search", std::make_unique<Search>(books, social));
 	add("follow", std::make_unique<Follow>(auth, social));
 	add("add-book", std::make_unique<AddBook>(auth, books));
 	add("create-shelf", std::make_unique<CreateShelf>(auth, books));
